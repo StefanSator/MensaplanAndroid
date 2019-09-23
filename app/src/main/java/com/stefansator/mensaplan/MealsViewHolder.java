@@ -10,11 +10,22 @@ public class MealsViewHolder extends RecyclerView.ViewHolder {
     TextView mealNameLabel;
     TextView mealPrizesLabel;
 
-    MealsViewHolder(View cellView) {
-        super(cellView);
-        mealImage = (ImageView) cellView.findViewById(R.id.meal_image);
-        mealNameLabel = (TextView) cellView.findViewById(R.id.meal_name_label);
-        mealPrizesLabel = (TextView) cellView.findViewById(R.id.meal_prizes_label);
+    MealsViewHolder(View itemView) {
+        super(itemView);
+        mealImage = (ImageView) itemView.findViewById(R.id.meal_image);
+        mealNameLabel = (TextView) itemView.findViewById(R.id.meal_name_label);
+        mealPrizesLabel = (TextView) itemView.findViewById(R.id.meal_prizes_label);
+    }
+
+    // Binds the Click Listener to the ItemView which holds the ViewHolder
+    public void bind(Meal item, MealsRecyclerViewAdapter.ItemSelectedListener listener) {
+        // itemView is public attribute in RecyclerView.ViewHolder Class
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.itemSelected(item);
+            }
+        });
     }
 
 }

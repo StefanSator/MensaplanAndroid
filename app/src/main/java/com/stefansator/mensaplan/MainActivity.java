@@ -53,7 +53,13 @@ public class MainActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         mealsRecyclerView.setLayoutManager(layoutManager);
         // Set Adapter for RecyclerView
-        mealsAdapter = new MealsRecyclerViewAdapter(meals, getApplicationContext());
+        mealsAdapter = new MealsRecyclerViewAdapter(meals, getApplicationContext(), new MealsRecyclerViewAdapter.ItemSelectedListener() {
+            @Override
+            public void itemSelected(Meal item) {
+                Toast toast = Toast.makeText(getApplicationContext(), item.getName(), Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        });
         mealsRecyclerView.setAdapter(mealsAdapter);
 
         // Set TabLayout
@@ -111,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
                         String lines[] = response.split("\n");
                         // TODO: Explain how to configure to use JAVA 8 Features in Android in Bachelor Paper. Keyword: Desugar
                         List<String> linesForSpecifiedDay = Arrays.stream(lines).filter(str -> str.contains(";" + weekDay + ";")).collect(Collectors.toList());
-                        System.out.println("Name " + linesForSpecifiedDay);
                         initializeMealsArray(linesForSpecifiedDay, lines[0].replace("\r", "").split(";"));
                         // Notify RecyclerView Adapter that DataSet has changed
                         mealsAdapter.insertAll(meals);

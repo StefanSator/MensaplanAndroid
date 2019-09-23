@@ -10,12 +10,19 @@ import java.util.List;
 import java.util.Locale;
 
 public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<MealsViewHolder> {
+
+    public interface ItemSelectedListener {
+        void itemSelected(Meal item);
+    }
+
     private List<Meal> meals;
     private Context context;
+    private ItemSelectedListener listener;
 
-    public MealsRecyclerViewAdapter(List<Meal> meals, Context context) {
+    public MealsRecyclerViewAdapter(List<Meal> meals, Context context, ItemSelectedListener listener) {
         this.meals = meals;
         this.context = context;
+        this.listener = listener;
     }
 
     // Called when RecyclerView needs a new RecyclerView.ViewHolder of the given type to represent an item
@@ -43,7 +50,7 @@ public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<MealsViewHold
         double guestPrize = meals.get(position).getGuestPrize();
         mealsViewHolder.mealPrizesLabel
                 .setText(String.format(Locale.GERMANY,"%f, %f, %f", studentPrize, guestPrize, employeePrize));
-
+        mealsViewHolder.bind(meals.get(position), listener);
     }
 
     // Returns the size of the dataset (invoked by the layout manager)
