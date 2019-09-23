@@ -1,5 +1,6 @@
 package com.stefansator.mensaplan;
 
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +21,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,8 +30,10 @@ import java.util.stream.Collectors;
 public class MainActivity extends AppCompatActivity {
     private List<Meal> meals = new ArrayList<Meal>();
     private RecyclerView mealsRecyclerView;
-    private RecyclerView.Adapter mealsAdapter;
+    private MealsRecyclerViewAdapter mealsAdapter;
     private RecyclerView.LayoutManager layoutManager;
+    private TabLayout tabLayout;
+    private int weekOfYear;
 
 
     @Override
@@ -36,9 +41,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //String url = "https://regensburger-forscher.de:9001/mensa/uni/fr";
-        String url = "https://www.stwno.de/infomax/daten-extern/csv/UNI-R/38.csv";
-        getJSONDataFromURL(url);
+        Calendar calendar = new GregorianCalendar();
+        weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
+        loadMealData("Mo", weekOfYear);
 
         // Obtain Handle to the RecyclerView
         mealsRecyclerView = (RecyclerView) findViewById(R.id.meals_recycler_view);
@@ -50,10 +55,52 @@ public class MainActivity extends AppCompatActivity {
         // Set Adapter for RecyclerView
         mealsAdapter = new MealsRecyclerViewAdapter(meals, getApplicationContext());
         mealsRecyclerView.setAdapter(mealsAdapter);
+
+        // Set TabLayout
+        tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+        // Set Action Listener
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                clearAllMealData();
+                String tabName = (String) tab.getText();
+                System.out.println("Name: " + tabName);
+                switch (tabName) {
+                    case "Mon":
+                        reloadListWithData("Mo");
+                        break;
+                    case "Tue":
+                        reloadListWithData("Di");
+                        break;
+                    case "Wed":
+                        reloadListWithData("Mi");
+                        break;
+                    case "Thu":
+                        reloadListWithData("Do");
+                        break;
+                    case "Fri":
+                        reloadListWithData("Fr");
+                        break;
+                    default:
+                        System.out.println("The selected Tab does not exist in TabLayout.");
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                // do nothing
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                // do nothing
+            }
+        });
     }
 
     // Networking with Volley
-    private void getJSONDataFromURL(String url) {
+    private void loadMealData(String weekDay, int weekOfYear) {
+        String url = "https://www.stwno.de/infomax/daten-extern/csv/UNI-R/" + weekOfYear + ".csv";
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         // Request the CSV as a String Response from the URL
@@ -62,9 +109,13 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         String lines[] = response.split("\n");
-                        // TODO: Explain how to configure to use JAVA 8 Features in Android in Bachelor Paper. Desugar
-                        List<String> linesForSpecifiedDay = Arrays.stream(lines).filter(str -> str.contains(";Mo;")).collect(Collectors.toList());
+                        // TODO: Explain how to configure to use JAVA 8 Features in Android in Bachelor Paper. Keyword: Desugar
+                        List<String> linesForSpecifiedDay = Arrays.stream(lines).filter(str -> str.contains(";" + weekDay + ";")).collect(Collectors.toList());
+                        System.out.println("Name " + linesForSpecifiedDay);
                         initializeMealsArray(linesForSpecifiedDay, lines[0].replace("\r", "").split(";"));
+                        // Notify RecyclerView Adapter that DataSet has changed
+                        mealsAdapter.insertAll(meals);
+                        mealsAdapter.notifyDataSetChanged();
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -95,6 +146,20 @@ public class MainActivity extends AppCompatActivity {
         return dictionary;
     }
 
+    private void clearAllMealData() {
+        meals = new ArrayList<Meal>();
+        mealsRecyclerView.removeAllViews();
+        mealsAdapter.removeAll();
+        /* list.remove(position);
+        recycler.removeViewAt(position);
+        mAdapter.notifyItemRemoved(position);
+        mAdapter.notifyItemRangeChanged(position, list.size()); */
+    }
+
+    private void reloadListWithData(String weekDay) {
+        loadMealData(weekDay, weekOfYear);
+    }
+
     /* Deprecated Functions */
 
     /*
@@ -107,7 +172,8 @@ public class MainActivity extends AppCompatActivity {
      */
 
     /*
-    private void getJSONDataFromURL(String url) {
+    private void getJSONDataFromURL() {
+        String url = "https://regensburger-forscher.de:9001/mensa/uni/fr";
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         // Initialize a new JSONArrayRequest instance

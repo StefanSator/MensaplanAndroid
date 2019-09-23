@@ -66,11 +66,24 @@ public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<MealsViewHold
         notifyItemInserted(position);
     }
 
+    // Insert all items at once to the adapter
+    public void insertAll(List<Meal> meals) {
+        this.meals = meals;
+    }
+
     // Remove item containing specified Meal object
     public void remove(Meal meal) {
         int position = meals.indexOf(meal);
         meals.remove(position);
         notifyItemRemoved(position);
+    }
+
+    // Remove all items in the Data Set
+    public void removeAll() {
+        for (Meal meal : meals) {
+            int position = meals.indexOf(meal);
+            notifyItemRemoved(position);
+        }
     }
 
 }
