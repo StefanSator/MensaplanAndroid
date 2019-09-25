@@ -40,6 +40,7 @@
                 android:layout_marginEnd="8dp"
                 android:text="@string/mealNameDefault"
                 android:textSize="22sp"
+                android:maxLines="4"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/meal_image"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -93,14 +94,15 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/guest_prize_label" />
 
-            <Button
+            <com.stefansator.mensaplan.RoundedButton
                 android:id="@+id/cancel_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="120dp"
+                android:layout_height="35dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:text="@string/cancelButtonText"
+                android:textSize="12sp"
                 android:onClick="cancel"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

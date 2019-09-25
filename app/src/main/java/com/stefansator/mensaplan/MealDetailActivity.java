@@ -3,9 +3,9 @@ package com.stefansator.mensaplan;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 
 public class MealDetailActivity extends AppCompatActivity {
     private ImageView mealImage;
@@ -13,7 +13,7 @@ public class MealDetailActivity extends AppCompatActivity {
     private TextView studentPrize;
     private TextView guestPrize;
     private TextView employeePrize;
-    private Button cancelButton;
+    private RoundedButton cancelButton;
     private Meal meal;
 
 
@@ -22,12 +22,12 @@ public class MealDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mealdetail);
         // Get the Handle to the UI Elements
-        mealImage = findViewById(R.id.meal_image);
-        mealName = findViewById(R.id.meal_name_label);
-        studentPrize = findViewById(R.id.student_prize_label);
-        guestPrize = findViewById(R.id.guest_prize_label);
-        employeePrize = findViewById(R.id.employee_prize_label);
-        cancelButton = findViewById(R.id.cancel_button);
+        mealImage = (ImageView) findViewById(R.id.meal_image);
+        mealName = (TextView) findViewById(R.id.meal_name_label);
+        studentPrize = (TextView) findViewById(R.id.student_prize_label);
+        guestPrize = (TextView) findViewById(R.id.guest_prize_label);
+        employeePrize = (TextView) findViewById(R.id.employee_prize_label);
+        cancelButton = (RoundedButton) findViewById(R.id.cancel_button);
 
         // Get the Meal which was sent by the Intent
         meal = getIntent().getParcelableExtra("Meal");
