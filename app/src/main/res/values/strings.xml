@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">Mensaplan</string>
-    <string name="mealNamePlaceholder">Label</string>
     <string name="mealPrizeLabel">Prize:</string>
-    <string name="mealPricesPlaceholder">Label</string>
+    <string name="mealPricesPlaceholder">Preise:</string>
     <string name="mealImageContentDescription">Ein Icon das die Kategorie des jeweiligen Gerichtes bildlich darstellt.</string>
+    <string name="mealNameDefault">Gerichtname</string>
+    <string name="studentPrizeDefault">Studenten:</string>
+    <string name="guestPrizeDefault">Gäste:</string>
+    <string name="employeePrizeDefault">Angestellte:</string>
+    <string name="cancelButtonText">Cancel</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.stefansator.mensaplan;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -56,8 +57,10 @@ public class MainActivity extends AppCompatActivity {
         mealsAdapter = new MealsRecyclerViewAdapter(meals, getApplicationContext(), new MealsRecyclerViewAdapter.ItemSelectedListener() {
             @Override
             public void itemSelected(Meal item) {
-                Toast toast = Toast.makeText(getApplicationContext(), item.getName(), Toast.LENGTH_SHORT);
-                toast.show();
+                // Open Meal Detail Dialog Window
+                Intent intent = new Intent(getApplicationContext(), MealDetailActivity.class);
+                intent.putExtra("Meal", item);
+                startActivity(intent);
             }
         });
         mealsRecyclerView.setAdapter(mealsAdapter);
@@ -70,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 clearAllMealData();
                 String tabName = (String) tab.getText();
-                System.out.println("Name: " + tabName);
                 switch (tabName) {
                     case "Mon":
                         reloadListWithData("Mo");
@@ -155,10 +157,6 @@ public class MainActivity extends AppCompatActivity {
         meals = new ArrayList<Meal>();
         mealsRecyclerView.removeAllViews();
         mealsAdapter.removeAll();
-        /* list.remove(position);
-        recycler.removeViewAt(position);
-        mAdapter.notifyItemRemoved(position);
-        mAdapter.notifyItemRangeChanged(position, list.size()); */
     }
 
     private void reloadListWithData(String weekDay) {

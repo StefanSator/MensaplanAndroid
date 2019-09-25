@@ -1,12 +1,21 @@
 package com.stefansator.mensaplan;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-public class Meal {
+/*
+ * Instead for implementing the Parcelable Interface it is also possible to implement the
+ * Serializable Interface, but it is less performant than implementing Parcelable.
+ */
+public class Meal implements Parcelable {
     private String name;
     private String day;
     private String category;
@@ -25,6 +34,7 @@ public class Meal {
         setRightImage(this.category);
     }
 
+    // constructor used for initialization with dictionary
     public Meal(Dictionary<String, String> dictionary) {
         name = dictionary.get("name");
         day = dictionary.get("tag");
@@ -36,6 +46,19 @@ public class Meal {
         cost.put("students", Double.parseDouble(studentCosts.replace(",", ".")));
         cost.put("employees", Double.parseDouble(employeeCosts.replace(",", ".")));
         cost.put("guests", Double.parseDouble(guestCosts.replace(",", ".")));
+        setRightImage(this.category);
+    }
+
+    // constructer used for initialization with parcel
+    protected Meal(Parcel parcel) {
+        // Important: Read in same order from parcel, as written to parcel
+        name = parcel.readString();
+        day = parcel.readString();
+        category = parcel.readString();
+        cost = new Hashtable<String, Double>();
+        cost.put("students", parcel.readDouble());
+        cost.put("employees", parcel.readDouble());
+        cost.put("guests", parcel.readDouble());
         setRightImage(this.category);
     }
 
@@ -131,5 +154,35 @@ public class Meal {
         return "Meal: " + name + ", Day: " + day + ", Category: " + category + ", studentPrize: "
                 + cost.get("students") + ", employeePrize: " + cost.get("employees") + ", guestPrize: "
                 + cost.get("guests");
+    }
+
+    // Parcelable Implementation
+    public static final Creator<Meal> CREATOR = new Creator<Meal>() {
+        @Override
+        public Meal createFromParcel(Parcel in) {
+            return new Meal(in);
+        }
+
+        @Override
+        public Meal[] newArray(int size) {
+            return new Meal[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(day);
+        dest.writeString(category);
+        Double studentCosts, employeeCosts, guestCosts;
+        dest.writeDouble((studentCosts = cost.get("students")) != null ? studentCosts : 0.0);
+        dest.writeDouble((employeeCosts = cost.get("students")) != null ? employeeCosts : 0.0);
+        dest.writeDouble((guestCosts = cost.get("students")) != null ? guestCosts : 0.0);
+        dest.writeInt(imageId);
     }
 }
