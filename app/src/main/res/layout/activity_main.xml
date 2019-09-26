@@ -5,59 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-<!--
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/meals_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="92dp"
-        android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tabLayout"
-        android:layout_width="match_parent"
-        android:layout_height="42dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <android.support.design.widget.TabItem
-            android:id="@+id/tabItemMon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Mon" />
-
-        <android.support.design.widget.TabItem
-            android:id="@+id/tabItemTue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tue" />
-
-        <android.support.design.widget.TabItem
-            android:id="@+id/tabItemWed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Wed" />
-
-        <android.support.design.widget.TabItem
-            android:id="@+id/tabItemThu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Thu" />
-
-        <android.support.design.widget.TabItem
-            android:id="@+id/tabItemFri"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Fri" />
-    </android.support.design.widget.TabLayout>
--->
-    <fragment
-        android:name="com.stefansator.mensaplan.MealListFragment"
+    <FrameLayout
         android:id="@+id/meal_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
