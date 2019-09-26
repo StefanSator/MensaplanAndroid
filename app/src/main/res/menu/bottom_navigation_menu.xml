@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Gerichte"
+        android:id="@+id/bottomNavigationMealMenuId"
+        android:icon="@drawable/gerichte_icon"/>
+
+    <item android:title="Favoriten"
+        android:id="@+id/bottomNavigationFavoritesMenuId"
+        android:icon="@drawable/gerichte_icon"/>
+
+</menu>

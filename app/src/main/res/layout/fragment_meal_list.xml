@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
-<!--
+    android:layout_height="match_parent">
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/meals_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="92dp"
+        android:layout_marginBottom="8dp"
         android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tabLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -21,7 +21,7 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="42dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -29,50 +29,31 @@
             android:id="@+id/tabItemMon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mon" />
+            android:text="@string/tabItem1" />
 
         <android.support.design.widget.TabItem
             android:id="@+id/tabItemTue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tue" />
+            android:text="@string/tabItem2" />
 
         <android.support.design.widget.TabItem
             android:id="@+id/tabItemWed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Wed" />
+            android:text="@string/tabItem3" />
 
         <android.support.design.widget.TabItem
             android:id="@+id/tabItemThu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Thu" />
+            android:text="@string/tabItem4" />
 
         <android.support.design.widget.TabItem
             android:id="@+id/tabItemFri"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fri" />
+            android:text="@string/tabItem5" />
     </android.support.design.widget.TabLayout>
--->
-    <fragment
-        android:name="com.stefansator.mensaplan.MealListFragment"
-        android:id="@+id/meal_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        app:menu="@menu/bottom_navigation_menu"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

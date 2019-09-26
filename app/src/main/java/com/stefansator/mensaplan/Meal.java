@@ -181,8 +181,8 @@ public class Meal implements Parcelable {
         dest.writeString(category);
         Double studentCosts, employeeCosts, guestCosts;
         dest.writeDouble((studentCosts = cost.get("students")) != null ? studentCosts : 0.0);
-        dest.writeDouble((employeeCosts = cost.get("students")) != null ? employeeCosts : 0.0);
-        dest.writeDouble((guestCosts = cost.get("students")) != null ? guestCosts : 0.0);
+        dest.writeDouble((employeeCosts = cost.get("employees")) != null ? employeeCosts : 0.0);
+        dest.writeDouble((guestCosts = cost.get("guests")) != null ? guestCosts : 0.0);
         dest.writeInt(imageId);
     }
 }

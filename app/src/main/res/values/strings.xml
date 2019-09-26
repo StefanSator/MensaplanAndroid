@@ -8,4 +8,9 @@
     <string name="guestPrizeDefault">Gäste:</string>
     <string name="employeePrizeDefault">Angestellte:</string>
     <string name="cancelButtonText">Cancel</string>
+    <string name="tabItem1">Mon</string>
+    <string name="tabItem2">Tue</string>
+    <string name="tabItem3">Wed</string>
+    <string name="tabItem4">Thu</string>
+    <string name="tabItem5">Fri</string>
 </resources>
