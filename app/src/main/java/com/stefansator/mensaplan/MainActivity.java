@@ -23,10 +23,10 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction = fragmentManager.beginTransaction();
         if (bottomNavigationView.getSelectedItemId() == R.id.bottomNavigationMealMenuId) {
             MealListFragment mealListFragment = new MealListFragment();
-            fragmentTransaction.add(R.id.meal_list, mealListFragment);
+            fragmentTransaction.replace(R.id.meal_list, mealListFragment);
         } else {
             FavoriteListFragment favoriteListFragment = new FavoriteListFragment();
-            fragmentTransaction.add(R.id.meal_list, favoriteListFragment);
+            fragmentTransaction.replace(R.id.meal_list, favoriteListFragment);
         }
         fragmentTransaction.commit();
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {

@@ -13,4 +13,8 @@
     <string name="tabItem3">Wed</string>
     <string name="tabItem4">Thu</string>
     <string name="tabItem5">Fri</string>
+    <string name="subscribeText">Als Favorit hinzufügen</string>
+    <string name="unsubscribeText">Als Favorit entfernen</string>
+    <string name="add">+</string>
+    <string name="minus">-</string>
 </resources>
