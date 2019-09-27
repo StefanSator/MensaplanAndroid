@@ -2,7 +2,6 @@ package com.stefansator.mensaplan;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -13,8 +12,12 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+interface ChangedFavoritesDelegate {
+    void changesInFavorites(boolean changes, Meal meal);
+}
 
 public class MealDetailActivity extends AppCompatActivity {
+    public static ChangedFavoritesDelegate DELEGATE = null;
     private ImageView mealImage;
     private TextView mealName;
     private TextView studentPrize;
@@ -55,7 +58,7 @@ public class MealDetailActivity extends AppCompatActivity {
             employeePrize.setText("Angestellte: " + meal.getEmployeePrize() + "€");
             // Get the Handle to the SharedPreferences Object
             sharedPreferences = getApplicationContext().getSharedPreferences("favorites", Context.MODE_PRIVATE);
-            if (mealIsFavorite() == true) {
+            if (mealIsFavorite()) {
                 setUnsubscribeButton();
             } else {
                 setSubscribeButton();
@@ -66,6 +69,7 @@ public class MealDetailActivity extends AppCompatActivity {
     // Actions
     // Close Dialog Window
     public void cancel(View view) {
+        DELEGATE = null;
         finish();
     }
 
@@ -99,6 +103,7 @@ public class MealDetailActivity extends AppCompatActivity {
         String json = gson.toJson(meal, Meal.class);
         editor.putString(meal.getName(), json);
         editor.apply();
+        if (DELEGATE != null) DELEGATE.changesInFavorites(true, meal);
     }
 
     // Remove current selected Meal as a Favorite
@@ -106,6 +111,7 @@ public class MealDetailActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.remove(meal.getName());
         editor.apply();
+        if (DELEGATE != null) DELEGATE.changesInFavorites(true, meal);
     }
 
     private void setSubscribeButton() {

@@ -81,8 +81,12 @@ public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<MealsViewHold
     // Remove item containing specified Meal object
     public void remove(Meal meal) {
         int position = meals.indexOf(meal);
-        meals.remove(position);
-        notifyItemRemoved(position);
+        if (position != -1) {
+            meals.remove(position);
+            notifyItemRemoved(position);
+        } else {
+            System.out.println("Meal to remove is not included in List.");
+        }
     }
 
     // Remove all items in the Data Set
@@ -92,5 +96,12 @@ public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<MealsViewHold
             notifyItemRemoved(position);
         }
     }
+
+    /*
+    Customer james = customers.stream()
+  .filter(customer -> "James".equals(customer.getName()))
+  .findAny()
+  .orElse(null);
+     */
 
 }

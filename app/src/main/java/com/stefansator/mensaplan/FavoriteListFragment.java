@@ -18,7 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class FavoriteListFragment extends Fragment {
+public class FavoriteListFragment extends Fragment implements ChangedFavoritesDelegate {
+    static final int INTENT_REQUEST_CODE = 1;
     private List<Meal> favorites = new ArrayList<Meal>();
     private RecyclerView mealsRecyclerView;
     private MealsRecyclerViewAdapter mealsAdapter;
@@ -48,7 +49,8 @@ public class FavoriteListFragment extends Fragment {
                 // Open Meal Detail Dialog Window
                 Intent intent = new Intent(getActivity().getApplicationContext(), MealDetailActivity.class);
                 intent.putExtra("Meal", item);
-                startActivity(intent);
+                MealDetailActivity.DELEGATE = FavoriteListFragment.this;
+                startActivityForResult(intent, INTENT_REQUEST_CODE);
             }
         });
         mealsRecyclerView.setAdapter(mealsAdapter);
@@ -56,17 +58,43 @@ public class FavoriteListFragment extends Fragment {
         return view;
     }
 
+    // Delegate Pattern
+    @Override
+    public void changesInFavorites(boolean changes, Meal meal) {
+        if (changes) {
+            Meal mealToRemove = removeFavorite(meal);
+            mealsAdapter.remove(mealToRemove);
+            mealsAdapter.notifyDataSetChanged();
+        }
+    }
+
     // Private Functions
 
     // Load all the favorite meals from Shared Preferences
     private void loadAllFavorites() {
+        favorites = new ArrayList<Meal>();
         Map<String, ?> mealsMap = sharedPreferences.getAll();
         for (String key : mealsMap.keySet()) {
             Gson gson = new Gson();
             String json = (String) mealsMap.get(key);
             Meal meal = gson.fromJson(json, Meal.class);
-            System.out.println(meal);
             favorites.add(meal);
         }
     }
+
+    // Remove the Meal from Favorites List
+    private Meal removeFavorite(Meal favoriteToDelete) {
+        Meal removedMeal = favorites.stream().filter(meal -> favoriteToDelete.getName().equals(meal.getName()))
+                .findAny()
+                .orElse(null);
+        favorites.remove(removedMeal);
+        return removedMeal;
+    }
+
+    /*
+    Customer james = customers.stream()
+  .filter(customer -> "James".equals(customer.getName()))
+  .findAny()
+  .orElse(null);
+     */
 }
