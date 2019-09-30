@@ -3,14 +3,22 @@ package com.stefansator.mensaplan;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -25,6 +33,7 @@ public class FavoriteListFragment extends Fragment implements ChangedFavoritesDe
     private MealsRecyclerViewAdapter mealsAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private SharedPreferences sharedPreferences;
+    private Paint paint = new Paint();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,6 +63,7 @@ public class FavoriteListFragment extends Fragment implements ChangedFavoritesDe
             }
         });
         mealsRecyclerView.setAdapter(mealsAdapter);
+        addSwipeToDelete();
 
         return view;
     }
@@ -82,6 +92,13 @@ public class FavoriteListFragment extends Fragment implements ChangedFavoritesDe
         }
     }
 
+    // Remove current selected Meal as a Favorite from Shared Preferences
+    private void deleteMealAsFavorite(Meal favoriteToDelete) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(favoriteToDelete.getName());
+        editor.apply();
+    }
+
     // Remove the Meal from Favorites List
     private Meal removeFavorite(Meal favoriteToDelete) {
         Meal removedMeal = favorites.stream().filter(meal -> favoriteToDelete.getName().equals(meal.getName()))
@@ -91,10 +108,56 @@ public class FavoriteListFragment extends Fragment implements ChangedFavoritesDe
         return removedMeal;
     }
 
-    /*
-    Customer james = customers.stream()
-  .filter(customer -> "James".equals(customer.getName()))
-  .findAny()
-  .orElse(null);
-     */
+    // Implements the Swipe To Delete Functionality of the Recycler View
+    private void addSwipeToDelete() {
+        ItemTouchHelper.SimpleCallback defaultItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int swipeDirection) {
+                int position = viewHolder.getAdapterPosition();
+
+                Toast toast = Toast.makeText(getContext(), "Als Favorit entfernt.", Toast.LENGTH_SHORT);
+                toast.show();
+
+                if (swipeDirection == ItemTouchHelper.LEFT) {
+                    final Meal deletedMeal = favorites.get(position);
+                    mealsAdapter.remove(deletedMeal);
+                    deleteMealAsFavorite(deletedMeal);
+                }
+            }
+
+            @Override
+            public void onChildDraw(Canvas canvas, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                Bitmap icon;
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                    View itemView = viewHolder.itemView;
+                    float height = (float) itemView.getBottom() - (float) itemView.getTop();
+                    float width = height / 3;
+
+                    if (dX > 0) {
+                        paint.setColor(Color.parseColor("#388E3C"));
+                        RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX, (float) itemView.getBottom());
+                        canvas.drawRect(background, paint);
+                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.trash);
+                        RectF icon_dest = new RectF((float) itemView.getLeft() + width ,(float) itemView.getTop() + width,(float) itemView.getLeft()+ 2 * width,(float) itemView.getBottom() - width);
+                        canvas.drawBitmap(icon,null, icon_dest, paint);
+                    } else {
+                        paint.setColor(Color.parseColor("#D32F2F"));
+                        RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
+                        canvas.drawRect(background, paint);
+                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.trash);
+                        RectF icon_dest = new RectF((float) itemView.getRight() - 2 * width ,(float) itemView.getTop() + width,(float) itemView.getRight() - width,(float) itemView.getBottom() - width);
+                        canvas.drawBitmap(icon,null, icon_dest, paint);
+                    }
+                }
+                super.onChildDraw(canvas, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(defaultItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(mealsRecyclerView);
+    }
 }

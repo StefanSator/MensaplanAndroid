@@ -96,12 +96,4 @@ public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<MealsViewHold
             notifyItemRemoved(position);
         }
     }
-
-    /*
-    Customer james = customers.stream()
-  .filter(customer -> "James".equals(customer.getName()))
-  .findAny()
-  .orElse(null);
-     */
-
 }
