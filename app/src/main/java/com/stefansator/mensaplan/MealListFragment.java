@@ -39,7 +39,7 @@ public class MealListFragment extends Fragment {
 
         Calendar calendar = new GregorianCalendar();
         weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
-        loadMealData("Mo", weekOfYear);
+        loadMealData("Mo", "Mo", weekOfYear);
 
         // Obtain Handle to the RecyclerView
         mealsRecyclerView = (RecyclerView) view.findViewById(R.id.meals_recycler_view);
@@ -70,19 +70,19 @@ public class MealListFragment extends Fragment {
                 String tabName = (String) tab.getText();
                 switch (tabName) {
                     case "Mon":
-                        reloadListWithData("Mo");
+                        reloadListWithData("Mo", "Mo");
                         break;
                     case "Tue":
-                        reloadListWithData("Di");
+                        reloadListWithData("Di", "Tu");
                         break;
                     case "Wed":
-                        reloadListWithData("Mi");
+                        reloadListWithData("Mi", "We");
                         break;
                     case "Thu":
-                        reloadListWithData("Do");
+                        reloadListWithData("Do", "Th");
                         break;
                     case "Fri":
-                        reloadListWithData("Fr");
+                        reloadListWithData("Fr", "Fr");
                         break;
                     default:
                         System.out.println("The selected Tab does not exist in TabLayout.");
@@ -104,7 +104,7 @@ public class MealListFragment extends Fragment {
     }
 
     // Networking with Volley
-    private void loadMealData(String weekDay, int weekOfYear) {
+    private void loadMealData(String weekDayDE, String weekDayEN, int weekOfYear) {
         String url = "https://www.stwno.de/infomax/daten-extern/csv/UNI-R/" + weekOfYear + ".csv";
         // Initialize a new RequestQueue instance
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
@@ -115,7 +115,9 @@ public class MealListFragment extends Fragment {
                     public void onResponse(String response) {
                         String lines[] = response.split("\n");
                         // TODO: Explain how to configure to use JAVA 8 Features in Android in Bachelor Paper. Keyword: Desugar
-                        List<String> linesForSpecifiedDay = Arrays.stream(lines).filter(str -> str.contains(";" + weekDay + ";")).collect(Collectors.toList());
+                        List<String> linesForSpecifiedDay = Arrays.stream(lines)
+                                .filter(str -> str.contains(";" + weekDayDE + ";") || str.contains(";" + weekDayEN + ";"))
+                                .collect(Collectors.toList());
                         initializeMealsArray(linesForSpecifiedDay, lines[0].replace("\r", "").split(";"));
                         // Notify RecyclerView Adapter that DataSet has changed
                         mealsAdapter.insertAll(meals);
@@ -156,8 +158,8 @@ public class MealListFragment extends Fragment {
         mealsAdapter.removeAll();
     }
 
-    private void reloadListWithData(String weekDay) {
-        loadMealData(weekDay, weekOfYear);
+    private void reloadListWithData(String weekDayDE, String weekDayEN) {
+        loadMealData(weekDayDE, weekDayEN, weekOfYear);
     }
 
     /* Deprecated Functions */
