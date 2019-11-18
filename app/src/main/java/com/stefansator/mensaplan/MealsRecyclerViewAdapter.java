@@ -1,13 +1,12 @@
 package com.stefansator.mensaplan;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
-import java.util.Locale;
 
 public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<MealsViewHolder> {
 
@@ -45,11 +44,6 @@ public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<MealsViewHold
             mealsViewHolder.mealImage.setImageResource(meals.get(position).getImageId());
         }
         mealsViewHolder.mealNameLabel.setText(meals.get(position).getName());
-        double studentPrize = meals.get(position).getStudentPrize();
-        double employeePrize = meals.get(position).getEmployeePrize();
-        double guestPrize = meals.get(position).getGuestPrize();
-        mealsViewHolder.mealPrizesLabel
-                .setText(String.format(Locale.GERMANY,"%f, %f, %f", studentPrize, guestPrize, employeePrize));
         mealsViewHolder.bind(meals.get(position), listener);
     }
 

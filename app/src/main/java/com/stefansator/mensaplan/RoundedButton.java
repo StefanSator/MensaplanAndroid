@@ -5,7 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 
-public class RoundedButton extends android.support.v7.widget.AppCompatButton {
+public class RoundedButton extends androidx.appcompat.widget.AppCompatButton {
     private double cornerRadius = 17.5;
     private int customBackgroundColor = Color.RED;
     private int customTextColor = Color.WHITE;
