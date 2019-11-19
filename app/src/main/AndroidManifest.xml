@@ -18,6 +18,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".LoginActivity"/>
+        <activity android:name=".RegisterActivity"/>
         <activity android:name=".MainActivity"/>
         <activity android:name=".MealDetailActivity"
             android:theme="@style/Theme.MaterialComponents.TraTheme.AppCompat.Transparent.NoActionBar" />

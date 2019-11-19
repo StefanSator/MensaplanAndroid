@@ -22,4 +22,7 @@
     <string name="email_input_hint">Email</string>
     <string name="passwort_input_hint">Passwort</string>
     <string name="login_button_label">Login</string>
+    <string name="check_password_input_label">Passwort bestätigen</string>
+    <string name="username_input_label">Username</string>
+    <string name="registerscreen_button_label">Registrieren</string>
 </resources>

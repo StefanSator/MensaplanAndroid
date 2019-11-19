@@ -17,12 +17,14 @@ public class StartActivity extends AppCompatActivity {
     //Actions
     /* Action to switch from current Activity to RegisterActivity */
     public void registerButtonClicked(View view) {
-        // TODO
+        // Open the Register Window
+        Intent intent = new Intent(this.getApplicationContext(), RegisterActivity.class);
+        startActivity(intent);
     }
 
     /* Action to switch from current Activity to LoginActivity */
     public void loginButtonClicked(View view) {
-        // Open a Login Window
+        // Open the Login Window
         Intent intent = new Intent(this.getApplicationContext(), LoginActivity.class);
         startActivity(intent);
     }
