@@ -105,11 +105,10 @@ public class MealListFragment extends Fragment {
 
     // Networking with Volley
     private void loadMealData(String weekDayDE, String weekDayEN, int weekOfYear) {
-        String url = "https://www.stwno.de/infomax/daten-extern/csv/UNI-R/" + weekOfYear + ".csv";
-        // Initialize a new RequestQueue instance
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+        // Get the NetworkingManager
+        NetworkingManager networkingManager = NetworkingManager.getInstance(this.getActivity());
         // Request the CSV as a String Response from the URL
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, networkingManager.getBackenURL() + weekOfYear + ".csv",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -130,7 +129,7 @@ public class MealListFragment extends Fragment {
             }
         });
         // Add the Request to the Request Queue
-        requestQueue.add(stringRequest);
+        networkingManager.addToStringRequestQueue(stringRequest);
     }
 
     // Private Functions

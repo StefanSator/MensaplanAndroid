@@ -108,7 +108,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/subscribeButton"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="40dp"
