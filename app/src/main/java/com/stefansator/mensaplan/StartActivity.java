@@ -1,5 +1,6 @@
 package com.stefansator.mensaplan;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -21,6 +22,8 @@ public class StartActivity extends AppCompatActivity {
 
     /* Action to switch from current Activity to LoginActivity */
     public void loginButtonClicked(View view) {
-        // TODO
+        // Open a Login Window
+        Intent intent = new Intent(this.getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
     }
 }

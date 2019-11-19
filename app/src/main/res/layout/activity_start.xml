@@ -16,13 +16,14 @@
         android:layout_marginBottom="8dp"
         android:contentDescription="@string/oth_logo"
         android:src="@drawable/othlogo"
-        app:layout_constraintBottom_toTopOf="@+id/roundedButton"
+        app:layout_constraintBottom_toTopOf="@+id/login_button_start"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.stefansator.mensaplan.RoundedButton
-        android:id="@+id/roundedButton"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/login_button_start"
+        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="215dp"
         android:layout_height="85dp"
         android:layout_marginStart="8dp"
@@ -33,13 +34,15 @@
         android:textAllCaps="false"
         android:textSize="42sp"
         android:onClick="loginButtonClicked"
+        app:backgroundTint="@color/buttonColorPrimary"
+        app:cornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/material_text_button"
+        android:id="@+id/register_text_button"
         style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,6 +54,6 @@
         android:onClick="registerButtonClicked"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/roundedButton" />
+        app:layout_constraintTop_toBottomOf="@+id/login_button_start" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

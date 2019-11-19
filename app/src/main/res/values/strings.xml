@@ -17,7 +17,9 @@
     <string name="unsubscribeText">Als Favorit entfernen</string>
     <string name="add">+</string>
     <string name="minus">-</string>
-    <string name="login_button_label">Login</string>
     <string name="register_button_label">Nock kein Kunde? Register</string>
     <string name="oth_logo">OTH-Logo</string>
+    <string name="email_input_hint">Email</string>
+    <string name="passwort_input_hint">Passwort</string>
+    <string name="login_button_label">Login</string>
 </resources>
