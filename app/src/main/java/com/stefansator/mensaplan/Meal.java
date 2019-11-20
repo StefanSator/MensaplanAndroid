@@ -14,14 +14,18 @@ import java.util.Hashtable;
  * Serializable Interface, but it is less performant than implementing Parcelable.
  */
 public class Meal implements Parcelable {
+    private int id;
     private String name;
     private String day;
     private String category;
     private Hashtable<String, Double> cost;
+    private int likes;
+    private int dislikes;
     private int imageId;
 
     // Initialization
-    public Meal(String name, String day, String category, double studentPrice, double employeePrice, double guestPrice) {
+    public Meal(int id, String name, String day, String category, double studentPrice, double employeePrice, double guestPrice, int likes, int dislikes) {
+        this.id = id;
         this.name = name;
         this.day = day;
         this.category = category;
@@ -29,27 +33,15 @@ public class Meal implements Parcelable {
         cost.put("students", studentPrice);
         cost.put("guests", guestPrice);
         cost.put("employees", employeePrice);
-        setRightImage(this.category);
-    }
-
-    // constructor used for initialization with dictionary
-    public Meal(Dictionary<String, String> dictionary) {
-        name = dictionary.get("name");
-        day = dictionary.get("tag");
-        category = dictionary.get("warengruppe");
-        String studentCosts = dictionary.get("stud");
-        String employeeCosts = dictionary.get("bed");
-        String guestCosts = dictionary.get("gast");
-        cost = new Hashtable<String, Double>();
-        cost.put("students", Double.parseDouble(studentCosts.replace(",", ".")));
-        cost.put("employees", Double.parseDouble(employeeCosts.replace(",", ".")));
-        cost.put("guests", Double.parseDouble(guestCosts.replace(",", ".")));
+        this.likes = likes;
+        this.dislikes = dislikes;
         setRightImage(this.category);
     }
 
     // constructer used for initialization with parcel
     protected Meal(Parcel parcel) {
         // Important: Read in same order from parcel, as written to parcel
+        id = parcel.readInt();
         name = parcel.readString();
         day = parcel.readString();
         category = parcel.readString();
@@ -57,22 +49,25 @@ public class Meal implements Parcelable {
         cost.put("students", parcel.readDouble());
         cost.put("employees", parcel.readDouble());
         cost.put("guests", parcel.readDouble());
+        likes = parcel.readInt();
+        dislikes = parcel.readInt();
         setRightImage(this.category);
     }
 
-    /* Deprecated:
+    // constructor used for Initialization with JSONObject
     public Meal(JSONObject json) throws JSONException {
-        name = json.getString("name");
-        day = json.getString("day");
+        id = json.getInt("mealid");
+        name = json.getString("mealname");
+        day = json.getString("weekday");
         category = json.getString("category");
-        JSONObject costObject = json.getJSONObject("cost");
         cost = new Hashtable<String, Double>();
-        cost.put("students", Double.parseDouble(costObject.getString("students").replace(",", ".")));
-        cost.put("guests", Double.parseDouble(costObject.getString("guests").replace(",", ".")));
-        cost.put("employees", Double.parseDouble(costObject.getString("employees").replace(",", ".")));
+        cost.put("students", json.getDouble("studentprice"));
+        cost.put("guests", json.getDouble("guestprice"));
+        cost.put("employees", json.getDouble("employeeprice"));
+        likes = json.getInt("likes");
+        dislikes = json.getInt("dislikes");
         setRightImage(this.category);
     }
-    */
 
     // Getter / Setter
     public String getName() {
@@ -121,6 +116,22 @@ public class Meal implements Parcelable {
 
     public void setGuestPrize(double prize) {
         cost.put("guests", prize);
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public int getDislikes() {
+        return dislikes;
+    }
+
+    public void setDislikes(int dislikes) {
+        this.dislikes = dislikes;
     }
 
     public int getImageId() {
@@ -174,6 +185,7 @@ public class Meal implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(name);
         dest.writeString(day);
         dest.writeString(category);
@@ -181,6 +193,8 @@ public class Meal implements Parcelable {
         dest.writeDouble((studentCosts = cost.get("students")) != null ? studentCosts : 0.0);
         dest.writeDouble((employeeCosts = cost.get("employees")) != null ? employeeCosts : 0.0);
         dest.writeDouble((guestCosts = cost.get("guests")) != null ? guestCosts : 0.0);
+        dest.writeInt(likes);
+        dest.writeInt(dislikes);
         dest.writeInt(imageId);
     }
 }

@@ -2,6 +2,8 @@ package com.stefansator.mensaplan;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,6 +18,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +38,7 @@ public class MealListFragment extends Fragment {
     private RecyclerView.LayoutManager layoutManager;
     private TabLayout tabLayout;
     private int weekOfYear;
+    private int year;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,7 +46,8 @@ public class MealListFragment extends Fragment {
 
         Calendar calendar = new GregorianCalendar();
         weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
-        loadMealData("Mo", "Mo", weekOfYear);
+        year = calendar.get(Calendar.YEAR);
+        loadMealData("Mo");
 
         // Obtain Handle to the RecyclerView
         mealsRecyclerView = (RecyclerView) view.findViewById(R.id.meals_recycler_view);
@@ -70,19 +78,19 @@ public class MealListFragment extends Fragment {
                 String tabName = (String) tab.getText();
                 switch (tabName) {
                     case "Mon":
-                        reloadListWithData("Mo", "Mo");
+                        reloadListWithData("Mo");
                         break;
                     case "Tue":
-                        reloadListWithData("Di", "Tu");
+                        reloadListWithData("Tu");
                         break;
                     case "Wed":
-                        reloadListWithData("Mi", "We");
+                        reloadListWithData("We");
                         break;
                     case "Thu":
-                        reloadListWithData("Do", "Th");
+                        reloadListWithData("Th");
                         break;
                     case "Fri":
-                        reloadListWithData("Fr", "Fr");
+                        reloadListWithData("Fr");
                         break;
                     default:
                         System.out.println("The selected Tab does not exist in TabLayout.");
@@ -103,21 +111,19 @@ public class MealListFragment extends Fragment {
         return view;
     }
 
-    // Networking with Volley
-    private void loadMealData(String weekDayDE, String weekDayEN, int weekOfYear) {
+    // Get Meal Data Set from Backend
+    private void loadMealData(String weekDay) {
         // Get the NetworkingManager
         NetworkingManager networkingManager = NetworkingManager.getInstance(this.getActivity());
+        int weekOfYear = 46; // TODO: Delete
+        // Construct URL
+        String url = networkingManager.getBackendURL() + "/meals?weekDay='" + weekDay + "'&calendarWeek=" + weekOfYear + "&year=" + year;
         // Request the CSV as a String Response from the URL
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, networkingManager.getBackenURL() + weekOfYear + ".csv",
-                new Response.Listener<String>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(String response) {
-                        String lines[] = response.split("\n");
-                        // TODO: Explain how to configure to use JAVA 8 Features in Android in Bachelor Paper. Keyword: Desugar
-                        List<String> linesForSpecifiedDay = Arrays.stream(lines)
-                                .filter(str -> str.contains(";" + weekDayDE + ";") || str.contains(";" + weekDayEN + ";"))
-                                .collect(Collectors.toList());
-                        initializeMealsArray(linesForSpecifiedDay, lines[0].replace("\r", "").split(";"));
+                    public void onResponse(JSONArray response) {
+                        initializeMealsArray(response);
                         // Notify RecyclerView Adapter that DataSet has changed
                         mealsAdapter.insertAll(meals);
                         mealsAdapter.notifyDataSetChanged();
@@ -129,26 +135,20 @@ public class MealListFragment extends Fragment {
             }
         });
         // Add the Request to the Request Queue
-        networkingManager.addToStringRequestQueue(stringRequest);
+        networkingManager.addToJsonArrayRequestQueue(jsonArrayRequest);
     }
 
     // Private Functions
-    private void initializeMealsArray(List<String> CSVLines, String[] keys) {
-        for (String line : CSVLines) {
-            String cleanLine = line.replace("\r", "");
-            Hashtable<String, String> dictionary = convertCSVToDictionary(cleanLine, keys);
-            Meal meal = new Meal(dictionary);
-            meals.add(meal);
+    private void initializeMealsArray(JSONArray jsonArray) {
+        try {
+            for (int i = 0 ; i < jsonArray.length() ; i++) {
+                JSONObject json = jsonArray.getJSONObject(i);
+                Meal meal = new Meal(json);
+                meals.add(meal);
+            }
+        } catch (JSONException exception) {
+            exception.printStackTrace();
         }
-    }
-
-    private Hashtable<String, String> convertCSVToDictionary(String line, String[] keys) {
-        String values[] = line.split(";");
-        Hashtable<String, String> dictionary = new Hashtable<String, String>();
-        for (int i = 0 ; i < values.length ; i++) {
-            dictionary.put(keys[i], values[i]);
-        }
-        return dictionary;
     }
 
     private void clearAllMealData() {
@@ -157,51 +157,7 @@ public class MealListFragment extends Fragment {
         mealsAdapter.removeAll();
     }
 
-    private void reloadListWithData(String weekDayDE, String weekDayEN) {
-        loadMealData(weekDayDE, weekDayEN, weekOfYear);
+    private void reloadListWithData(String weekDay) {
+        loadMealData(weekDay);
     }
-
-    /* Deprecated Functions */
-
-    /*
-     * These Functions where used for loading JSON converted Meal Data from Mensa API of regensburger-forscher.de.
-     * Unfortunately the Certificate of the Mensa API became invalid, so i can not retrieve data from the webservice anymore.
-     * Android allows only secure connections over https to a webservice.
-     * Instead of retrieving Data from the Mensa API of regensburger-forscher.de, i retrieve my Meal Data now directly from the website
-     * of the Studentenwerk Niederbayern/Oberpfalz.
-     * The change of Service is the reason why these functions are deprecated and not used anymore.
-     */
-
-    /*
-    private void getJSONDataFromURL() {
-        String url = "https://regensburger-forscher.de:9001/mensa/uni/fr";
-        // Initialize a new RequestQueue instance
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        // Initialize a new JSONArrayRequest instance
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        // Process the JSON
-                        try {
-                            for (int i = 0 ; i < response.length() ; i++) {
-                                JSONObject json = response.getJSONObject(i);
-                                Meal meal = new Meal(json);
-                                meals.add(meal);
-                            }
-                        } catch (JSONException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast toast = Toast.makeText(getApplicationContext(), "Daten konnten nicht vom Server geladen werden.", Toast.LENGTH_SHORT);
-                        toast.show();
-                    }
-                });
-        // Add JsonArrayRequest to the RequestQueue
-        requestQueue.add(jsonArrayRequest);
-    }
-    */
 }

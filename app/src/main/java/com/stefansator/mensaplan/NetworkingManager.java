@@ -2,7 +2,9 @@ package com.stefansator.mensaplan;
 
 import android.content.Context;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -10,7 +12,8 @@ public class NetworkingManager {
     private static NetworkingManager shared;
     private RequestQueue requestQueue;
     private static Context context;
-    private String backendURL = "https://www.stwno.de/infomax/daten-extern/csv/UNI-R/";
+    //private String backendURL = "https://www.stwno.de/infomax/daten-extern/csv/UNI-R/";
+    private String backendURL = "https://young-beyond-20476.herokuapp.com";
 
     private NetworkingManager(Context context) {
         this.context = context;
@@ -31,11 +34,11 @@ public class NetworkingManager {
         return requestQueue;
     }
 
-    public <T> void addToStringRequestQueue(StringRequest request) {
+    public <T> void addToJsonArrayRequestQueue(JsonArrayRequest request) {
         getRequestQueue().add(request);
     }
 
-    public String getBackenURL() {
+    public String getBackendURL() {
         return backendURL;
     }
 }
