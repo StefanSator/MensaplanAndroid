@@ -24,9 +24,12 @@ public class MainActivity extends AppCompatActivity {
         if (bottomNavigationView.getSelectedItemId() == R.id.bottomNavigationMealMenuId) {
             MealListFragment mealListFragment = new MealListFragment();
             fragmentTransaction.replace(R.id.meal_list, mealListFragment);
-        } else {
+        } else if (bottomNavigationView.getSelectedItemId() == R.id.bottomNavigationFavoritesMenuId) {
             FavoriteListFragment favoriteListFragment = new FavoriteListFragment();
             fragmentTransaction.replace(R.id.meal_list, favoriteListFragment);
+        } else {
+            AccountFragment accountFragment = new AccountFragment();
+            fragmentTransaction.replace(R.id.meal_list, accountFragment);
         }
         fragmentTransaction.commit();
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -47,6 +50,12 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTransaction.replace(R.id.meal_list, favoriteListFragment);
                         fragmentTransaction.commit();
                         return true;
+                    case R.id.bottomNavigationAccountMenuId:
+                        AccountFragment accountFragment = new AccountFragment();
+                        fragmentManager = getSupportFragmentManager();
+                        fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.meal_list, accountFragment);
+                        fragmentTransaction.commit();
                     default:
                         return false;
                 }

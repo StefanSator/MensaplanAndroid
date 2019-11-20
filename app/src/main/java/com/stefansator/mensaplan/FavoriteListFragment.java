@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 public class FavoriteListFragment extends Fragment implements ChangedFavoritesDelegate {
-    static final int INTENT_REQUEST_CODE = 1;
     private List<Meal> favorites = new ArrayList<Meal>();
     private RecyclerView mealsRecyclerView;
     private MealsRecyclerViewAdapter mealsAdapter;
@@ -59,7 +58,7 @@ public class FavoriteListFragment extends Fragment implements ChangedFavoritesDe
                 Intent intent = new Intent(getActivity().getApplicationContext(), MealDetailActivity.class);
                 intent.putExtra("Meal", item);
                 MealDetailActivity.DELEGATE = FavoriteListFragment.this;
-                startActivityForResult(intent, INTENT_REQUEST_CODE);
+                startActivity(intent);
             }
         });
         mealsRecyclerView.setAdapter(mealsAdapter);

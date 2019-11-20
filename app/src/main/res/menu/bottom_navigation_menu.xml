@@ -9,4 +9,8 @@
         android:id="@+id/bottomNavigationFavoritesMenuId"
         android:icon="@drawable/gerichte_icon"/>
 
+    <item android:title="Account"
+        android:id="@+id/bottomNavigationAccountMenuId"
+        android:icon="@drawable/gerichte_icon"/>
+
 </menu>

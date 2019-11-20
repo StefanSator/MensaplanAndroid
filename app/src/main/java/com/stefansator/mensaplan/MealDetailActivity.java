@@ -126,6 +126,4 @@ public class MealDetailActivity extends AppCompatActivity {
         isSubscribed = true;
     }
 
-    // TODO: Adapt app for landscape orientation
-
 }
