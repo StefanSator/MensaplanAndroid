@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
+import java.util.Locale;
 
 public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<MealsViewHolder> {
 
@@ -44,6 +45,8 @@ public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<MealsViewHold
             mealsViewHolder.mealImage.setImageResource(meals.get(position).getImageId());
         }
         mealsViewHolder.mealNameLabel.setText(meals.get(position).getName());
+        mealsViewHolder.likeCountLabel.setText(String.format(Locale.GERMAN,"%d", meals.get(position).getLikes()));
+        mealsViewHolder.dislikeCountLabel.setText(String.format(Locale.GERMAN, "%d", meals.get(position).getDislikes()));
         mealsViewHolder.bind(meals.get(position), listener);
     }
 

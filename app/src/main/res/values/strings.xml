@@ -25,4 +25,6 @@
     <string name="check_password_input_label">Passwort bestätigen</string>
     <string name="username_input_label">Username</string>
     <string name="registerscreen_button_label">Registrieren</string>
+    <string name="like_string">✓</string>
+    <string name="dislike_string">×</string>
 </resources>
