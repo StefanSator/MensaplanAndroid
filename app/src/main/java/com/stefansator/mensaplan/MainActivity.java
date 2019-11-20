@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                menuItem.setChecked(true);
                 switch (menuItem.getItemId()) {
                     case R.id.bottomNavigationMealMenuId:
                         MealListFragment mealListFragment = new MealListFragment();
