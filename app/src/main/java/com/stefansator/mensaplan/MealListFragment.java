@@ -135,7 +135,7 @@ public class MealListFragment extends Fragment {
             }
         });
         // Add the Request to the Request Queue
-        networkingManager.addToJsonArrayRequestQueue(jsonArrayRequest);
+        networkingManager.addToRequestQueue(jsonArrayRequest);
     }
 
     // Private Functions

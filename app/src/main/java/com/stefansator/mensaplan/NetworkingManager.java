@@ -34,7 +34,7 @@ public class NetworkingManager {
         return requestQueue;
     }
 
-    public <T> void addToJsonArrayRequestQueue(JsonArrayRequest request) {
+    public <T> void addToRequestQueue(Request<T> request) {
         getRequestQueue().add(request);
     }
 
