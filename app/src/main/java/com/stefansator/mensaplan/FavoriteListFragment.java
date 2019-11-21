@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class FavoriteListFragment extends Fragment implements ChangedFavoritesDelegate {
+public class FavoriteListFragment extends Fragment implements ChangesLikeDislikeDelegate {
     private List<Meal> favorites = new ArrayList<Meal>();
     private RecyclerView mealsRecyclerView;
     private MealsRecyclerViewAdapter mealsAdapter;
@@ -69,11 +69,9 @@ public class FavoriteListFragment extends Fragment implements ChangedFavoritesDe
 
     // Delegate Pattern
     @Override
-    public void changesInFavorites(boolean changes, Meal meal) {
+    public void changesInLikesDislikes(boolean changes) {
         if (changes) {
-            Meal mealToRemove = removeFavorite(meal);
-            mealsAdapter.remove(mealToRemove);
-            mealsAdapter.notifyDataSetChanged();
+            // TODO
         }
     }
 

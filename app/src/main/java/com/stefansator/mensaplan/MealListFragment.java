@@ -31,7 +31,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MealListFragment extends Fragment {
+public class MealListFragment extends Fragment implements ChangesLikeDislikeDelegate {
     private List<Meal> meals = new ArrayList<Meal>();
     private RecyclerView mealsRecyclerView;
     private MealsRecyclerViewAdapter mealsAdapter;
@@ -63,6 +63,7 @@ public class MealListFragment extends Fragment {
                 // Open Meal Detail Dialog Window
                 Intent intent = new Intent(getActivity().getApplicationContext(), MealDetailActivity.class);
                 intent.putExtra("Meal", item);
+                MealDetailActivity.DELEGATE = MealListFragment.this;
                 startActivity(intent);
             }
         });
@@ -111,6 +112,15 @@ public class MealListFragment extends Fragment {
         return view;
     }
 
+    // ChangesLikeDislikeDelegate
+    public void changesInLikesDislikes(boolean changes) {
+        if (changes) {
+            TabLayout.Tab tab = tabLayout.getTabAt(tabLayout.getSelectedTabPosition());
+            reloadListWithData((String) tab.getText());
+        }
+    }
+
+    // Private Functions
     // Get Meal Data Set from Backend
     private void loadMealData(String weekDay) {
         // Get the NetworkingManager
@@ -138,7 +148,6 @@ public class MealListFragment extends Fragment {
         networkingManager.addToRequestQueue(jsonArrayRequest);
     }
 
-    // Private Functions
     private void initializeMealsArray(JSONArray jsonArray) {
         try {
             for (int i = 0 ; i < jsonArray.length() ; i++) {
