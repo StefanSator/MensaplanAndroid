@@ -118,7 +118,7 @@ public class MealListFragment extends Fragment {
         int weekOfYear = 46; // TODO: Delete
         // Construct URL
         String url = networkingManager.getBackendURL() + "/meals?weekDay='" + weekDay + "'&calendarWeek=" + weekOfYear + "&year=" + year;
-        // Request the CSV as a String Response from the URL
+        // Request the data as a JSON Array
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
