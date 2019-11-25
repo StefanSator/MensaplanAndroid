@@ -213,8 +213,11 @@ public class MealDetailActivity extends AppCompatActivity {
             ex.printStackTrace();
         }
         // Construct URL
-        String url = networkingManager.getBackendURL() + "/meals" + likeRoute;
-        JsonObjectRequest deleteLikeRequest = new JsonObjectRequest(Request.Method.DELETE, url, like,
+        String baseUrl = networkingManager.getBackendURL();
+        String route = "/meals" + likeRoute;
+        String queryParams = String.format(Locale.GERMAN, "?mealId=%s&sessionId=%s", meal.getId(), UserSession.getSessionToken());
+        String url = String.format(Locale.GERMAN, "%s%s%s", baseUrl, route, queryParams);
+        JsonObjectRequest deleteLikeRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
