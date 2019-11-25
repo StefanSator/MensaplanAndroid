@@ -6,6 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <io.alterac.blurkit.BlurLayout
+        android:id="@+id/blur_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <view
         class="com.google.android.material.card.MaterialCardView"
         id="@+id/meal_dialog_container"
