@@ -8,6 +8,9 @@ import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,10 +116,14 @@ public class MealListFragment extends Fragment implements ChangesLikeDislikeDele
     }
 
     // ChangesLikeDislikeDelegate
-    public void changesInLikesDislikes(boolean changes) {
+    public void changesInLikesDislikes(boolean changes, Meal updatedMeal) {
         if (changes) {
-            TabLayout.Tab tab = tabLayout.getTabAt(tabLayout.getSelectedTabPosition());
-            reloadListWithData((String) tab.getText());
+            Meal originalMeal = getOriginalMeal(updatedMeal);
+            int position = mealsAdapter.remove(originalMeal);
+            mealsAdapter.insert(position, updatedMeal);
+            mealsAdapter.notifyDataSetChanged();
+            //TabLayout.Tab tab = tabLayout.getTabAt(tabLayout.getSelectedTabPosition());
+            //reloadListWithData((String) tab.getText());
         }
     }
 
@@ -133,8 +140,8 @@ public class MealListFragment extends Fragment implements ChangesLikeDislikeDele
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        initializeMealsArray(response);
-                        // Notify RecyclerView Adapter that DataSet has changed
+                        initializeMealsArray(response); // TODO: Bug: Response Array is empty if called from Delegator
+                        // Notify Adapter that Data Set has changed
                         mealsAdapter.insertAll(meals);
                         mealsAdapter.notifyDataSetChanged();
                     }
@@ -161,12 +168,20 @@ public class MealListFragment extends Fragment implements ChangesLikeDislikeDele
     }
 
     private void clearAllMealData() {
-        meals = new ArrayList<Meal>();
+        meals.clear();
         mealsRecyclerView.removeAllViews();
         mealsAdapter.removeAll();
     }
 
     private void reloadListWithData(String weekDay) {
         loadMealData(weekDay);
+    }
+
+    /* Returns the original Meal Object in a Data Set of Recycler View from a copy */
+    private Meal getOriginalMeal(Meal mealCopy) {
+        Meal original = meals.stream().filter(m -> mealCopy.getName().equals(m.getName()))
+                .findAny()
+                .orElse(null);
+        return original;
     }
 }

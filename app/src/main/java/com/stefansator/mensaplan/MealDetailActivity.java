@@ -26,7 +26,7 @@ import org.json.JSONObject;
 import java.util.Locale;
 
 interface ChangesLikeDislikeDelegate {
-    void changesInLikesDislikes(boolean changes);
+    void changesInLikesDislikes(boolean change, Meal updatedMeal);
 }
 
 // Types of Like States
@@ -53,6 +53,8 @@ public class MealDetailActivity extends AppCompatActivity {
     private Meal meal;
     private String likeRoute = "/likes";
     private String likeState = LikeStates.neutral;
+    private int likeCount = 0;
+    private int dislikeCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,8 +114,8 @@ public class MealDetailActivity extends AppCompatActivity {
     // Action for Like Button
     public void like(View view) {
         try {
-            int likeCount = Integer.parseInt(likeCountLabel.getText().toString());
-            int dislikeCount = Integer.parseInt(dislikeCountLabel.getText().toString());
+            this.likeCount = Integer.parseInt(likeCountLabel.getText().toString());
+            this.dislikeCount = Integer.parseInt(dislikeCountLabel.getText().toString());
 
             if (likeState.equals(LikeStates.like)) {
                 // Delete like from DB
@@ -158,8 +160,8 @@ public class MealDetailActivity extends AppCompatActivity {
     // Action for Dislike Button
     public void dislike(View view) {
         try {
-            int likeCount = Integer.parseInt(likeCountLabel.getText().toString());
-            int dislikeCount = Integer.parseInt(dislikeCountLabel.getText().toString());
+            this.likeCount = Integer.parseInt(likeCountLabel.getText().toString());
+            this.dislikeCount = Integer.parseInt(dislikeCountLabel.getText().toString());
 
             if (likeState.equals(LikeStates.dislike)) {
                 // Delete Like From DB
@@ -346,10 +348,11 @@ public class MealDetailActivity extends AppCompatActivity {
         }
     }
 
-    // TODO: Bugfix: Delegate does not update List
-    // Informs the Delegate that changes occurred
+    // Informs the Delegate that changes occurred and updates Meals Like and Dislike Count
     private void informDelegate() {
-        DELEGATE.changesInLikesDislikes(true);
+        meal.setLikes(likeCount);
+        meal.setDislikes(dislikeCount);
+        DELEGATE.changesInLikesDislikes(true, meal);
     }
 
     /*

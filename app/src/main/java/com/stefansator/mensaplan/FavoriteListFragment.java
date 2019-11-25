@@ -69,7 +69,7 @@ public class FavoriteListFragment extends Fragment implements ChangesLikeDislike
 
     // Delegate Pattern
     @Override
-    public void changesInLikesDislikes(boolean changes) {
+    public void changesInLikesDislikes(boolean changes, Meal updatedMeal) {
         if (changes) {
             // TODO
         }
