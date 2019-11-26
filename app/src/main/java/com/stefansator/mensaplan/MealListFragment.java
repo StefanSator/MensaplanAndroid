@@ -122,8 +122,6 @@ public class MealListFragment extends Fragment implements ChangesLikeDislikeDele
             int position = mealsAdapter.remove(originalMeal);
             mealsAdapter.insert(position, updatedMeal);
             mealsAdapter.notifyDataSetChanged();
-            //TabLayout.Tab tab = tabLayout.getTabAt(tabLayout.getSelectedTabPosition());
-            //reloadListWithData((String) tab.getText());
         }
     }
 
@@ -140,7 +138,7 @@ public class MealListFragment extends Fragment implements ChangesLikeDislikeDele
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        initializeMealsArray(response); // TODO: Bug: Response Array is empty if called from Delegator
+                        initializeMealsArray(response);
                         // Notify Adapter that Data Set has changed
                         mealsAdapter.insertAll(meals);
                         mealsAdapter.notifyDataSetChanged();

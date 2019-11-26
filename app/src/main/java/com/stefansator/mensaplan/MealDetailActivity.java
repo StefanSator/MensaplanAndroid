@@ -49,7 +49,6 @@ public class MealDetailActivity extends AppCompatActivity {
     private MaterialButton dislikeButton;
     private TextView likeCountLabel;
     private TextView dislikeCountLabel;
-    private BlurLayout blurLayout;
     private Meal meal;
     private String likeRoute = "/likes";
     private String likeState = LikeStates.neutral;
@@ -71,7 +70,6 @@ public class MealDetailActivity extends AppCompatActivity {
         dislikeButton = (MaterialButton) findViewById(R.id.dislike_button);
         likeCountLabel = (TextView) findViewById(R.id.like_label_count);
         dislikeCountLabel = (TextView) findViewById(R.id.dislike_label_count);
-        blurLayout = (BlurLayout) findViewById(R.id.blur_layout);
 
         // Get the Meal which was sent by the Intent
         meal = getIntent().getParcelableExtra("Meal");
@@ -90,18 +88,6 @@ public class MealDetailActivity extends AppCompatActivity {
              */
             getLikeDislikeState();
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        blurLayout.startBlur();
-    }
-
-    @Override
-    protected void onStop() {
-        blurLayout.pauseBlur();
-        super.onStop();
     }
 
     // Actions
