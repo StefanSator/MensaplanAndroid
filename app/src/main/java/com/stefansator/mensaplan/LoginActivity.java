@@ -3,6 +3,7 @@ package com.stefansator.mensaplan;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.android.volley.Request;
@@ -33,9 +34,21 @@ public class LoginActivity extends AppCompatActivity {
         passwordInput = (TextInputEditText) findViewById(R.id.password_input);
     }
 
+    // Checks if Email has correct Format
+    private boolean checkEmail() {
+        boolean correct = !TextUtils.isEmpty(emailInput.getText()) && android.util.Patterns.EMAIL_ADDRESS.matcher(emailInput.getText()).matches();
+        if (!correct) {
+            showAlertForIncorrectLogin();
+            return false;
+        }
+        return true;
+    }
+
     //Actions
     // Action for checking login of user and if login is correct than logging in the user
     public void loginButtonClicked(View view) {
+        // Check Email Format on Client
+        if (!checkEmail()) return;
         // Validate user input by asking the Backend
         String url = NetworkingManager.getInstance(this).getBackendURL() + "/customers/validate";
         JSONObject body = new JSONObject();
