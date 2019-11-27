@@ -5,7 +5,7 @@
         android:id="@+id/bottomNavigationMealMenuId"
         android:icon="@drawable/gerichte_icon"/>
 
-    <item android:title="Favoriten"
+    <item android:title="History"
         android:id="@+id/bottomNavigationFavoritesMenuId"
         android:icon="@drawable/gerichte_icon"/>
 

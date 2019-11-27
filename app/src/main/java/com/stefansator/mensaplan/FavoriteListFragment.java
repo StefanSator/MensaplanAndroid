@@ -20,38 +20,44 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class FavoriteListFragment extends Fragment implements ChangesLikeDislikeDelegate {
     private List<Meal> favorites = new ArrayList<Meal>();
-    private RecyclerView mealsRecyclerView;
-    private MealsRecyclerViewAdapter mealsAdapter;
+    private List<Integer> likes = new ArrayList<Integer>();
+    private List<Integer> dislikes = new ArrayList<Integer>();
+    private RecyclerView historyRecyclerView;
+    private HistoryRecyclerViewAdapter historyRecyclerViewAdapter;
     private RecyclerView.LayoutManager layoutManager;
-    private SharedPreferences sharedPreferences;
     private Paint paint = new Paint();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favorite_list, container, false);
 
-        // Get Handle to Shared Preferences Object
-        sharedPreferences = getActivity().getApplicationContext().getSharedPreferences("favorites", Context.MODE_PRIVATE);
-        // Load all Favorite Meals from User
-        loadAllFavorites();
-
         // Obtain Handle to the RecyclerView
-        mealsRecyclerView = (RecyclerView) view.findViewById(R.id.meals_recycler_view);
+        historyRecyclerView = (RecyclerView) view.findViewById(R.id.meals_recycler_view);
         // improve Performance of RecyclerView if Layout has always fixed size during Execution
-        mealsRecyclerView.setHasFixedSize(true);
+        historyRecyclerView.setHasFixedSize(true);
         // Set LayoutManager for RecyclerView
         layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-        mealsRecyclerView.setLayoutManager(layoutManager);
+        historyRecyclerView.setLayoutManager(layoutManager);
         // Set Adapter for RecyclerView
-        mealsAdapter = new MealsRecyclerViewAdapter(favorites, getActivity().getApplicationContext(), new MealsRecyclerViewAdapter.ItemSelectedListener() {
+        historyRecyclerViewAdapter = new HistoryRecyclerViewAdapter(favorites, likes, dislikes, getActivity().getApplicationContext(), new HistoryRecyclerViewAdapter.ItemSelectedListener() {
             @Override
             public void itemSelected(Meal item) {
                 // Open Meal Detail Dialog Window
@@ -61,8 +67,11 @@ public class FavoriteListFragment extends Fragment implements ChangesLikeDislike
                 startActivity(intent);
             }
         });
-        mealsRecyclerView.setAdapter(mealsAdapter);
+        historyRecyclerView.setAdapter(historyRecyclerViewAdapter);
         addSwipeToDelete();
+
+        // Load all Favorite Meals from User
+        loadListData();
 
         return view;
     }
@@ -71,38 +80,81 @@ public class FavoriteListFragment extends Fragment implements ChangesLikeDislike
     @Override
     public void changesInLikesDislikes(boolean changes, Meal updatedMeal) {
         if (changes) {
-            // TODO
+            loadListData();
         }
     }
 
     // Private Functions
+    /* Starts GET-Request to Backend to get all meals the user either liked or disliked */
+    private void loadListData() {
+        clearAllListData();
+        System.out.println("Starting Backend Request.");
+        NetworkingManager networkingManager = NetworkingManager.getInstance(this.getActivity());
+        String baseUrl = networkingManager.getBackendURL() + "/meals/userlikes";
+        String queryParams = "?userid=" + UserSession.getSessionToken();
+        String url = baseUrl + queryParams;
+        JsonObjectRequest userlikesRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println(response.toString());
+                        initializeMealArrays(response);
+                        historyRecyclerViewAdapter.insertAll(favorites, likes, dislikes);
+                        historyRecyclerViewAdapter.notifyDataSetChanged();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("An Error occurred while performing Request to Server. Error: " + error.getLocalizedMessage());
+                    }
+        });
+        networkingManager.addToRequestQueue(userlikesRequest);
+    }
 
-    // Load all the favorite meals from Shared Preferences
-    private void loadAllFavorites() {
-        favorites = new ArrayList<Meal>();
-        Map<String, ?> mealsMap = sharedPreferences.getAll();
-        for (String key : mealsMap.keySet()) {
-            Gson gson = new Gson();
-            String json = (String) mealsMap.get(key);
-            Meal meal = gson.fromJson(json, Meal.class);
-            favorites.add(meal);
+    /* Starts DELETE-Request to Backend to delete a like or dislike of a specified user regarding a specified Meals */
+    private void deleteLikeOrDislike(Meal meal) {
+        NetworkingManager networkingManager = NetworkingManager.getInstance(this.getActivity());
+        String baseUrl = networkingManager.getBackendURL() + "/meals/likes";
+        String queryParams = String.format(Locale.GERMAN, "?mealId=%s&sessionId=%s", meal.getId(), UserSession.getSessionToken());
+        String url = baseUrl + queryParams;
+        JsonObjectRequest deleteLikeRequest = new JsonObjectRequest(Request.Method.DELETE, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println(response.toString());
+                        // TODO: Error Handling
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println("An Error occurred while performing Request to Server. Error: " + error.getLocalizedMessage());
+                    }
+        });
+        networkingManager.addToRequestQueue(deleteLikeRequest);
+    }
+
+    /* Initializes the Meals Array from JSON Data and fills likes and dislikes Array with the appropriate Data */
+    private void initializeMealArrays(JSONObject response) {
+        try {
+            JSONArray jsonMeals = response.getJSONArray("meals");
+            JSONArray jsonLikes = response.getJSONArray("likes");
+            JSONArray jsonDislikes = response.getJSONArray("dislikes");
+            // Fill Meal Array
+            for (int i = 0 ; i < jsonMeals.length() ; i++) {
+                Meal meal = new Meal(jsonMeals.getJSONObject(i));
+                favorites.add(meal);
+            }
+            // Fill Likes Array
+            for (int i = 0 ; i < jsonLikes.length() ; i++) {
+                likes.add(jsonLikes.getJSONObject(i).getInt("mealid"));
+            }
+            // Fill Dislikes Array
+            for (int i = 0 ; i < jsonDislikes.length() ; i++) {
+                dislikes.add(jsonDislikes.getJSONObject(i).getInt("mealid"));
+            }
+        } catch (JSONException ex) {
+            ex.printStackTrace();
         }
-    }
-
-    // Remove current selected Meal as a Favorite from Shared Preferences
-    private void deleteMealAsFavorite(Meal favoriteToDelete) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove(favoriteToDelete.getName());
-        editor.apply();
-    }
-
-    // Remove the Meal from Favorites List
-    private Meal removeFavorite(Meal favoriteToDelete) {
-        Meal removedMeal = favorites.stream().filter(meal -> favoriteToDelete.getName().equals(meal.getName()))
-                .findAny()
-                .orElse(null);
-        favorites.remove(removedMeal);
-        return removedMeal;
     }
 
     // Implements the Swipe To Delete Functionality of the Recycler View
@@ -122,8 +174,8 @@ public class FavoriteListFragment extends Fragment implements ChangesLikeDislike
 
                 if (swipeDirection == ItemTouchHelper.LEFT) {
                     final Meal deletedMeal = favorites.get(position);
-                    mealsAdapter.remove(deletedMeal);
-                    deleteMealAsFavorite(deletedMeal);
+                    historyRecyclerViewAdapter.remove(deletedMeal);
+                    deleteLikeOrDislike(deletedMeal);
                 }
             }
 
@@ -155,6 +207,14 @@ public class FavoriteListFragment extends Fragment implements ChangesLikeDislike
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(defaultItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(mealsRecyclerView);
+        itemTouchHelper.attachToRecyclerView(historyRecyclerView);
+    }
+
+    /* Clears the displayed List */
+    private void clearAllListData() {
+        favorites.clear();
+        likes.clear();
+        dislikes.clear();
+        historyRecyclerView.removeAllViews();
     }
 }

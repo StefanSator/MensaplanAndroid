@@ -192,14 +192,6 @@ public class MealDetailActivity extends AppCompatActivity {
     // Private Functions
     /* Starts Backend DELETE-Request to delete likes or dislikes from DB */
     private void deleteLikeDislikeInDB() {
-        // Construct body
-        JSONObject like = new JSONObject();
-        try {
-            like.put("userId", UserSession.getSessionToken());
-            like.put("mealId", meal.getId());
-        } catch (JSONException ex) {
-            ex.printStackTrace();
-        }
         // Construct URL
         String baseUrl = networkingManager.getBackendURL();
         String route = "/meals" + likeRoute;

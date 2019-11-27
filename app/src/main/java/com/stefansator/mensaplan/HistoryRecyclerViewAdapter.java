@@ -1,7 +1,7 @@
 package com.stefansator.mensaplan;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,44 +9,52 @@ import android.view.ViewGroup;
 import java.util.List;
 import java.util.Locale;
 
-public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<MealsViewHolder> {
+import androidx.recyclerview.widget.RecyclerView;
+
+public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
 
     public interface ItemSelectedListener {
         void itemSelected(Meal item);
     }
 
     private List<Meal> meals;
+    private List<Integer> likes;
+    private List<Integer> dislikes;
     private Context context;
-    private ItemSelectedListener listener;
+    private HistoryRecyclerViewAdapter.ItemSelectedListener listener;
 
-    public MealsRecyclerViewAdapter(List<Meal> meals, Context context, ItemSelectedListener listener) {
+    public HistoryRecyclerViewAdapter(List<Meal> meals, List<Integer> likes, List<Integer> dislikes, Context context, HistoryRecyclerViewAdapter.ItemSelectedListener listener) {
         this.meals = meals;
+        this.likes = likes;
+        this.dislikes = dislikes;
         this.context = context;
         this.listener = listener;
     }
 
     // Called when RecyclerView needs a new RecyclerView.ViewHolder of the given type to represent an item
     @Override
-    public MealsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public HistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Inflate the layout
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.meal_detail_cell, parent, false);
+                .inflate(R.layout.like_dislike_detail_cell, parent, false);
         // Initialize the View Holder
-        MealsViewHolder holder = new MealsViewHolder(view);
+        HistoryViewHolder holder = new HistoryViewHolder(view);
         return holder;
 
     }
 
     // Called by RecyclerView to display the data at the specified position
     @Override
-    public void onBindViewHolder(MealsViewHolder mealsViewHolder, int position) {
+    public void onBindViewHolder(HistoryViewHolder mealsViewHolder, int position) {
         // Use View Holder to populate the current row of the Recycler View
-        if (meals.get(position).getImageId() != 0) {
-            mealsViewHolder.mealImage.setImageResource(meals.get(position).getImageId());
-        }
         mealsViewHolder.mealNameLabel.setText(meals.get(position).getName());
-        mealsViewHolder.likeCountLabel.setText(String.format(Locale.GERMAN,"%d", meals.get(position).getLikes()));
-        mealsViewHolder.dislikeCountLabel.setText(String.format(Locale.GERMAN, "%d", meals.get(position).getDislikes()));
+        if (likes.contains(meals.get(position).getId())) {
+            mealsViewHolder.likeTypeLabel.setText("✓");
+            mealsViewHolder.likeTypeLabel.setTextColor(Color.BLUE);
+        } else if (dislikes.contains(meals.get(position).getId())) {
+            mealsViewHolder.likeTypeLabel.setText("×");
+            mealsViewHolder.likeTypeLabel.setTextColor(Color.RED);
+        }
         mealsViewHolder.bind(meals.get(position), listener);
     }
 
@@ -64,22 +72,13 @@ public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<MealsViewHold
 
     }
 
-    // Insert a new item on specified position
-    public void insert(int position, Meal meal) {
-        meals.add(position, meal);
-        notifyItemInserted(position);
-    }
-
-    // Insert all items at once to the adapter
-    public void insertAll(List<Meal> meals) {
-        this.meals = meals;
-    }
-
     // Remove item containing specified Meal object
     public int remove(Meal meal) {
         int position = meals.indexOf(meal);
         if (position != -1) {
             meals.remove(position);
+            likes.removeIf(id -> (id == meals.get(position).getId()));
+            dislikes.removeIf(id -> (id == meals.get(position).getId()));
             notifyItemRemoved(position);
         } else {
             System.out.println("Meal to remove is not included in List.");
@@ -87,11 +86,10 @@ public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<MealsViewHold
         return position;
     }
 
-    // Remove all items in the Data Set
-    public void removeAll() {
-        for (Meal meal : meals) {
-            int position = meals.indexOf(meal);
-            notifyItemRemoved(position);
-        }
+    // Insert all items at once to the adapter
+    public void insertAll(List<Meal> meals, List<Integer> likes, List<Integer> dislikes) {
+        this.meals = meals;
+        this.likes = likes;
+        this.dislikes = dislikes;
     }
 }
