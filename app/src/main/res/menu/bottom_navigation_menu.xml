@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="Gerichte"
+    <item android:title="@string/meal_tab_label"
         android:id="@+id/bottomNavigationMealMenuId"
         android:icon="@drawable/gerichte_icon"/>
 
-    <item android:title="History"
+    <item android:title="@string/favorites_tab_label"
         android:id="@+id/bottomNavigationFavoritesMenuId"
         android:icon="@drawable/gerichte_icon"/>
 
-    <item android:title="Account"
+    <item android:title="@string/history_tab_label"
+        android:id="@+id/bottomNavigationHistoryMenuId"
+        android:icon="@drawable/gerichte_icon"/>
+
+    <item android:title="@string/account_tab_label"
         android:id="@+id/bottomNavigationAccountMenuId"
         android:icon="@drawable/gerichte_icon"/>
 

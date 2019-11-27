@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:weightSum="2">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/most_popular_card"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="25dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:backgroundTint="@color/most_popular_background_color">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:weightSum="4">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/most_popular_animation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                app:lottie_rawRes="@raw/trophy_animation"
+                app:lottie_loop="true"
+                app:lottie_autoPlay="true" />
+
+            <TextView
+                android:id="@+id/most_popular_name"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="@string/mealNameDefault"
+                android:textColor="@android:color/white"
+                android:gravity="center_vertical"
+                android:layout_weight="2"/>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/most_unpopular_card"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="50dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:backgroundTint="@color/most_unpopular_background_color">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:weightSum="4">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/most_unpopular_animation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                app:lottie_rawRes="@raw/dislike_thumb_emoji_animation"
+                app:lottie_loop="true"
+                app:lottie_autoPlay="true" />
+
+            <TextView
+                android:id="@+id/most_unpopular_name"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="@string/mealNameDefault"
+                android:textColor="@android:color/white"
+                android:gravity="center_vertical"
+                android:layout_weight="2"/>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

@@ -25,6 +25,10 @@ public class MainActivity extends AppCompatActivity {
             MealListFragment mealListFragment = new MealListFragment();
             fragmentTransaction.replace(R.id.meal_list, mealListFragment);
         } else if (bottomNavigationView.getSelectedItemId() == R.id.bottomNavigationFavoritesMenuId) {
+            PopularMealsFragment popularMealsFragment = new PopularMealsFragment();
+            fragmentTransaction.replace(R.id.meal_list, popularMealsFragment);
+        } else if (bottomNavigationView.getSelectedItemId() == R.id.bottomNavigationHistoryMenuId) {
+            // TODO: Rename Favorite Class Names to History
             FavoriteListFragment favoriteListFragment = new FavoriteListFragment();
             fragmentTransaction.replace(R.id.meal_list, favoriteListFragment);
         } else {
@@ -45,6 +49,13 @@ public class MainActivity extends AppCompatActivity {
                         fragmentTransaction.commit();
                         return true;
                     case R.id.bottomNavigationFavoritesMenuId:
+                        PopularMealsFragment popularMealsFragment = new PopularMealsFragment();
+                        fragmentManager = getSupportFragmentManager();
+                        fragmentTransaction = fragmentManager.beginTransaction();
+                        fragmentTransaction.replace(R.id.meal_list, popularMealsFragment);
+                        fragmentTransaction.commit();
+                        return true;
+                    case R.id.bottomNavigationHistoryMenuId:
                         FavoriteListFragment favoriteListFragment = new FavoriteListFragment();
                         fragmentManager = getSupportFragmentManager();
                         fragmentTransaction = fragmentManager.beginTransaction();

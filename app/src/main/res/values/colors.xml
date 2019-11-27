@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#0000FF</color>
     <color name="colorAccent">#0000FF</color>
     <color name="buttonColorPrimary">#ff0000</color>
+    <color name="most_popular_background_color">#3490DC</color>
+    <color name="most_unpopular_background_color">#E3342F</color>
 </resources>

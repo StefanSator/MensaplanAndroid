@@ -28,4 +28,8 @@
     <string name="like_string">✓</string>
     <string name="dislike_string">×</string>
     <string name="logout_button_string">Logout</string>
+    <string name="meal_tab_label">Gerichte</string>
+    <string name="favorites_tab_label">Favoriten</string>
+    <string name="history_tab_label">History</string>
+    <string name="account_tab_label">Account</string>
 </resources>
