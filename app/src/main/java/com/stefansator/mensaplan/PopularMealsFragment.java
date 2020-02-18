@@ -67,7 +67,8 @@ public class PopularMealsFragment extends Fragment implements ChangesLikeDislike
     private void loadPopularAndUnpopularMeal() {
         Calendar calendar = new GregorianCalendar();
         // int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
-        int year = calendar.get(Calendar.YEAR);
+        //int year = calendar.get(Calendar.YEAR); // TODO: change to real calendar year
+        int year = 2019;
         int weekOfYear = 46; // TODO: change to real calendar week
         int weekDay = calendar.get(Calendar.DAY_OF_WEEK);
         if (weekDay == Calendar.SATURDAY || weekDay == Calendar.SUNDAY) {

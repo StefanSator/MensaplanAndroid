@@ -7,22 +7,49 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
-import java.util.Locale;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Adapter for managing {@see HistoryViewHolder} Objects. Creates and returns new ViewHolder Objects
+ * on Request to the RecyclerView or fills them on request with the appropriate data.
+ * @author stefansator
+ * @version 1.0
+ */
 public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
 
+    /**
+     * Interface for implementing a listener for item selection.
+     * @author stefansator
+     * @version 1.0
+     */
     public interface ItemSelectedListener {
+        /**
+         * Implement this function to define what should happen when a item in list is selected.
+         * @param item The meal in the list which was selected.
+         */
         void itemSelected(Meal item);
     }
 
+    /** The data set of the RecyclerView. Contains all meals the user has liked or disliked. */
     private List<Meal> meals;
+    /** Contains all mealids of the meals the user has liked. */
     private List<Integer> likes;
+    /** Contains all mealids of the meals the user has disliked. */
     private List<Integer> dislikes;
+    /** The current application context */
     private Context context;
+    /** The listener for item selection within the RecyclerView */
     private HistoryRecyclerViewAdapter.ItemSelectedListener listener;
 
+    /**
+     * Constructor
+     * @param meals List which contains all meals the user has liked or disliked.
+     * @param likes List which contains all mealids of the meals the user has liked.
+     * @param dislikes List which contains all mealids of the meals the user has disliked.
+     * @param context The current application context
+     * @param listener The listener for item selection within the RecyclerView
+     */
     public HistoryRecyclerViewAdapter(List<Meal> meals, List<Integer> likes, List<Integer> dislikes, Context context, HistoryRecyclerViewAdapter.ItemSelectedListener listener) {
         this.meals = meals;
         this.likes = likes;
@@ -31,7 +58,9 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryView
         this.listener = listener;
     }
 
-    // Called when RecyclerView needs a new RecyclerView.ViewHolder of the given type to represent an item
+    /**
+     * Called when RecyclerView needs a new RecyclerView.ViewHolder of the given type to represent an item.
+     */
     @Override
     public HistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Inflate the layout
@@ -43,7 +72,9 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryView
 
     }
 
-    // Called by RecyclerView to display the data at the specified position
+    /**
+     * Called by RecyclerView to display the data at the specified position.
+     */
     @Override
     public void onBindViewHolder(HistoryViewHolder mealsViewHolder, int position) {
         // Use View Holder to populate the current row of the Recycler View
@@ -58,27 +89,37 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryView
         mealsViewHolder.bind(meals.get(position), listener);
     }
 
-    // Returns the size of the dataset (invoked by the layout manager)
+    /**
+     * Returns the size of the dataset (is invoked by the layout manager of the RecyclerView).
+     */
     @Override
     public int getItemCount() {
         return meals.size();
     }
 
-    // Called by a RecyclerView when it starts observing this Adapter
-    // Same Adapter may be observed by multiple RecyclerViews
+    /**
+     * Register RecyclerView as a observer of this adapter.
+     * @param recyclerView recyclerview to register as a observer
+     */
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
 
     }
 
-    // Remove item containing specified Meal object
+    /**
+     * Remove this meal from the data set of the adapter.
+     * @param meal item to remove from data set
+     * @return int index of removed item
+     */
     public int remove(Meal meal) {
         int position = meals.indexOf(meal);
+        System.out.println("Position remove(): " + position);
+        System.out.println("SIZE remove(): " + meals.size());
         if (position != -1) {
-            meals.remove(position);
             likes.removeIf(id -> (id == meals.get(position).getId()));
             dislikes.removeIf(id -> (id == meals.get(position).getId()));
+            meals.remove(position);
             notifyItemRemoved(position);
         } else {
             System.out.println("Meal to remove is not included in List.");
@@ -86,7 +127,12 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryView
         return position;
     }
 
-    // Insert all items at once to the adapter
+    /**
+     * Insert all items at once to the data set of this adapter.
+     * @param meals List which contains all meals the user has liked or disliked.
+     * @param likes List which contains all mealids of the meals the user has liked.
+     * @param dislikes List which contains all mealids of the meals the user has disliked.
+     */
     public void insertAll(List<Meal> meals, List<Integer> likes, List<Integer> dislikes) {
         this.meals = meals;
         this.likes = likes;

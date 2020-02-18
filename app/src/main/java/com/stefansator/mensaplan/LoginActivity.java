@@ -21,6 +21,11 @@ import java.util.Map;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * The controller for handling the login process within the app.
+ * @author stefansator
+ * @version 1.0
+ */
 public class LoginActivity extends AppCompatActivity {
     private TextInputEditText emailInput;
     private TextInputEditText passwordInput;
@@ -34,17 +39,14 @@ public class LoginActivity extends AppCompatActivity {
         passwordInput = (TextInputEditText) findViewById(R.id.password_input);
     }
 
-    // Checks if Email has correct Format
-    private boolean checkEmail() {
-        boolean correct = !TextUtils.isEmpty(emailInput.getText()) && android.util.Patterns.EMAIL_ADDRESS.matcher(emailInput.getText()).matches();
-        if (!correct) {
-            showAlertForIncorrectLogin();
-            return false;
-        }
-        return true;
-    }
+    // Actions
 
-    //Actions
+    /**
+     * Action which is called automatically if login button is clicked.
+     * It checks the login of a user and if the login is correct, the user gets logged in.
+     * @param view The view which has triggered the action. Here: the login button defined in the
+     *             layout
+     */
     // Action for checking login of user and if login is correct than logging in the user
     public void loginButtonClicked(View view) {
         // Check Email Format on Client
@@ -83,7 +85,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     // Private Functions
-    // Completion Handler for Login Request to Backend
+
+    /**
+     * Completion Handler for Login Request to Backend.
+     * @param response JSON Response from the backend
+     */
     private void loginRequestHandler(JSONObject response) {
         try {
             Boolean valid = response.getBoolean("successful");
@@ -99,13 +105,33 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    // Logs in User and sets the Session Token for current Session
+    /**
+     * Logs in User and sets the Session Token for current Session.
+     * @param sessionToken the token which was delivered from the backend, after login request
+     *                     was successfull
+     */
     private void loginUser(int sessionToken) {
         UserSession.setSessionToken(sessionToken);
         Intent intent = new Intent(this.getApplicationContext(), MainActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Checks if Email has a valid Format, before submitting it to the backend.
+     * @return boolean true if email is valid, otherwise false.
+     */
+    private boolean checkEmail() {
+        boolean correct = !TextUtils.isEmpty(emailInput.getText()) && android.util.Patterns.EMAIL_ADDRESS.matcher(emailInput.getText()).matches();
+        if (!correct) {
+            showAlertForIncorrectLogin();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Shows Alert Dialog when something went wrong, during the login process.
+     */
     // Shows Alert Dialog when user input is not valid
     private void showAlertForIncorrectLogin() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

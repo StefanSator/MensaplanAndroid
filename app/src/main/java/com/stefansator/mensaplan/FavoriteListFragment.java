@@ -1,8 +1,6 @@
 package com.stefansator.mensaplan;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -23,9 +21,7 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,17 +30,38 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
+/**
+ * Fragment for implementing the Like-History Functionality. It handles a list
+ * which contains all liked and disliked meals. It implements functionality used for
+ * managing the list.
+ * @author stefansator
+ * @version 1.0
+ */
 public class FavoriteListFragment extends Fragment implements ChangesLikeDislikeDelegate {
+    /** Contains all meals the user has liked and disliked. */
     private List<Meal> favorites = new ArrayList<Meal>();
+    /** Contains the mealid of every liked meal. */
     private List<Integer> likes = new ArrayList<Integer>();
+    /** Contains the mealid of every disliked meal. */
     private List<Integer> dislikes = new ArrayList<Integer>();
+    /** The RecyclerView for displaying the list. */
     private RecyclerView historyRecyclerView;
+    /** The Adapter for the RecyclerView. */
     private HistoryRecyclerViewAdapter historyRecyclerViewAdapter;
+    /** The LayoutManager used for the RecyclerView. */
     private RecyclerView.LayoutManager layoutManager;
+    /** Paint object for drawing geometries and bitmaps. Is used by the {@link #addSwipeToDelete()} function. */
     private Paint paint = new Paint();
 
+    /**
+     * This function is called, when the FavoriteListFragment is created. It instantiates the User
+     * Interface, by setting up the RecyclerView.
+     * @param inflater inflater for inflating views in the fragment
+     * @param container parent view to which the fragment should be attached to
+     * @param savedInstanceState If non-null, fragment is being reconstructed from previous state
+     * @return View This returns the created Layout as a View Object
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favorite_list, container, false);
@@ -85,7 +102,9 @@ public class FavoriteListFragment extends Fragment implements ChangesLikeDislike
     }
 
     // Private Functions
-    /* Starts GET-Request to Backend to get all meals the user either liked or disliked */
+    /**
+     * Starts GET-Request to Backend to get all meals the user either liked or disliked.
+     */
     private void loadListData() {
         clearAllListData();
         System.out.println("Starting Backend Request.");
@@ -111,7 +130,11 @@ public class FavoriteListFragment extends Fragment implements ChangesLikeDislike
         networkingManager.addToRequestQueue(userlikesRequest);
     }
 
-    /* Starts DELETE-Request to Backend to delete a like or dislike of a specified user regarding a specified Meals */
+    /**
+     * Starts DELETE-Request to Backend to delete a like or dislike of the logged in user regarding
+     * a specified Meal.
+     * @param meal The meal for which the like or dislike should be deleted
+     */
     private void deleteLikeOrDislike(Meal meal) {
         NetworkingManager networkingManager = NetworkingManager.getInstance(this.getActivity());
         String baseUrl = networkingManager.getBackendURL() + "/meals/likes";
@@ -133,7 +156,10 @@ public class FavoriteListFragment extends Fragment implements ChangesLikeDislike
         networkingManager.addToRequestQueue(deleteLikeRequest);
     }
 
-    /* Initializes the Meals Array from JSON Data and fills likes and dislikes Array with the appropriate Data */
+    /**
+     * Constructs and fills {@link #favorites}, {@link #likes}, {@link #dislikes} with appropriate data.
+     * @param response The json response from the backend
+     */
     private void initializeMealArrays(JSONObject response) {
         try {
             JSONArray jsonMeals = response.getJSONArray("meals");
@@ -157,7 +183,9 @@ public class FavoriteListFragment extends Fragment implements ChangesLikeDislike
         }
     }
 
-    // Implements the Swipe To Delete Functionality of the Recycler View
+    /**
+     * Implements the Swipe-To-Delete Functionality for the RecyclerView.
+     */
     private void addSwipeToDelete() {
         ItemTouchHelper.SimpleCallback defaultItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
@@ -168,6 +196,8 @@ public class FavoriteListFragment extends Fragment implements ChangesLikeDislike
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int swipeDirection) {
                 int position = viewHolder.getAdapterPosition();
+                System.out.println("Position onSwiped(): " + position);
+                System.out.println("SIZE: onSwiped(): " + favorites.size());
 
                 Toast toast = Toast.makeText(getContext(), "Als Favorit entfernt.", Toast.LENGTH_SHORT);
                 toast.show();
@@ -180,21 +210,14 @@ public class FavoriteListFragment extends Fragment implements ChangesLikeDislike
             }
 
             @Override
-            public void onChildDraw(Canvas canvas, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            public void onChildDraw(@NonNull Canvas canvas, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
                 Bitmap icon;
                 if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
                     View itemView = viewHolder.itemView;
                     float height = (float) itemView.getBottom() - (float) itemView.getTop();
                     float width = height / 3;
 
-                    if (dX > 0) {
-                        paint.setColor(Color.parseColor("#388E3C"));
-                        RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX, (float) itemView.getBottom());
-                        canvas.drawRect(background, paint);
-                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.trash);
-                        RectF icon_dest = new RectF((float) itemView.getLeft() + width ,(float) itemView.getTop() + width,(float) itemView.getLeft()+ 2 * width,(float) itemView.getBottom() - width);
-                        canvas.drawBitmap(icon,null, icon_dest, paint);
-                    } else {
+                    if (dX <= 0) {
                         paint.setColor(Color.parseColor("#D32F2F"));
                         RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
                         canvas.drawRect(background, paint);
@@ -210,7 +233,9 @@ public class FavoriteListFragment extends Fragment implements ChangesLikeDislike
         itemTouchHelper.attachToRecyclerView(historyRecyclerView);
     }
 
-    /* Clears the displayed List */
+    /**
+     * Clears all data displayed within the RecyclerView.
+     */
     private void clearAllListData() {
         favorites.clear();
         likes.clear();

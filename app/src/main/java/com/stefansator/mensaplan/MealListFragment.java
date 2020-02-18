@@ -131,6 +131,7 @@ public class MealListFragment extends Fragment implements ChangesLikeDislikeDele
         // Get the NetworkingManager
         NetworkingManager networkingManager = NetworkingManager.getInstance(this.getActivity());
         int weekOfYear = 46; // TODO: Delete
+        int year = 2019; // TODO: Delete
         // Construct URL
         String url = networkingManager.getBackendURL() + "/meals?weekDay='" + weekDay + "'&calendarWeek=" + weekOfYear + "&year=" + year;
         // Request the data as a JSON Array

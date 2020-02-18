@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-import io.alterac.blurkit.BlurLayout;
 
 import android.view.View;
 import android.widget.Button;
@@ -99,6 +98,8 @@ public class MealDetailActivity extends AppCompatActivity {
 
     // Action for Like Button
     public void like(View view) {
+        if (meal == null) return;
+
         try {
             this.likeCount = Integer.parseInt(likeCountLabel.getText().toString());
             this.dislikeCount = Integer.parseInt(dislikeCountLabel.getText().toString());
@@ -145,6 +146,8 @@ public class MealDetailActivity extends AppCompatActivity {
 
     // Action for Dislike Button
     public void dislike(View view) {
+        if (meal == null) return;
+
         try {
             this.likeCount = Integer.parseInt(likeCountLabel.getText().toString());
             this.dislikeCount = Integer.parseInt(dislikeCountLabel.getText().toString());
