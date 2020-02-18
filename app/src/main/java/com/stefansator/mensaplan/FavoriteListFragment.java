@@ -196,8 +196,6 @@ public class FavoriteListFragment extends Fragment implements ChangesLikeDislike
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int swipeDirection) {
                 int position = viewHolder.getAdapterPosition();
-                System.out.println("Position onSwiped(): " + position);
-                System.out.println("SIZE: onSwiped(): " + favorites.size());
 
                 Toast toast = Toast.makeText(getContext(), "Als Favorit entfernt.", Toast.LENGTH_SHORT);
                 toast.show();

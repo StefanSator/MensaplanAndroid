@@ -114,8 +114,7 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryView
      */
     public int remove(Meal meal) {
         int position = meals.indexOf(meal);
-        System.out.println("Position remove(): " + position);
-        System.out.println("SIZE remove(): " + meals.size());
+
         if (position != -1) {
             likes.removeIf(id -> (id == meals.get(position).getId()));
             dislikes.removeIf(id -> (id == meals.get(position).getId()));
