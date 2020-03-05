@@ -27,7 +27,9 @@ import androidx.appcompat.app.AppCompatActivity;
  * @version 1.0
  */
 public class LoginActivity extends AppCompatActivity {
+    /** Input Field for the email of the user */
     private TextInputEditText emailInput;
+    /** Input Field for the password of the user */
     private TextInputEditText passwordInput;
 
     @Override
@@ -40,7 +42,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     // Actions
-
     /**
      * Action which is called automatically if login button is clicked.
      * It checks the login of a user and if the login is correct, the user gets logged in.
@@ -132,7 +133,6 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Shows Alert Dialog when something went wrong, during the login process.
      */
-    // Shows Alert Dialog when user input is not valid
     private void showAlertForIncorrectLogin() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Login Incorrect.");

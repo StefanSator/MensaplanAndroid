@@ -24,34 +24,75 @@ import org.json.JSONObject;
 
 import java.util.Locale;
 
+/**
+ * Classes who implement this interface can be informed by a Delegator
+ * if changes occurred to a Meal Object, e.g. User disliked a Meal.
+ * They can then implement the Function to perform appropriate reactions to the changes,
+ * e.g. by updating the right element in the list to show the changes immediately to the user.
+ * @author stefansator
+ * @version 1.0
+ */
 interface ChangesLikeDislikeDelegate {
+    /**
+     * Implementors of the interface can define this function to be informed if changes to a Meal
+     * Object occurred and react to it appropriately.
+     * @param change true, if changes have occurred, else false.
+     * @param updatedMeal the updated Meal Object.
+     */
     void changesInLikesDislikes(boolean change, Meal updatedMeal);
 }
 
-// Types of Like States
+/**
+ * Class holding the possible like types as static members of the class.
+ * @author stefansator
+ * @version 1.0
+ */
 class LikeStates {
     public static final String like = "like";
     public static final String dislike = "dislike";
     public static final String neutral = "neutral";
 }
 
+/**
+ * Activity for controlling the Detail Screen of a Meal, which is shown if a user wants to look
+ * at detailed information of a Meal in the app.
+ * @author stefansator
+ * @version 1.0
+ */
 public class MealDetailActivity extends AppCompatActivity {
+    /** The Delegate which gets informed if changes to the displayed Meal occurred. */
     public static ChangesLikeDislikeDelegate DELEGATE = null;
+    /** The NetworkingManager which is used for Communication with the backend service. */
     private NetworkingManager networkingManager = NetworkingManager.getInstance(this);
+    /** The ImageView showing the approriate image for a meal. */
     private ImageView mealImage;
+    /** The TextView for displaying the name of a meal. */
     private TextView mealName;
+    /** The TextView for displaying the student price of a meal. */
     private TextView studentPrize;
+    /** The TextView for displaying the guest price of a meal. */
     private TextView guestPrize;
+    /** The TextView for displaying the employee price of a meal. */
     private TextView employeePrize;
+    /** The Button which is used for closing the Meal Dialog Window. */
     private RoundedButton cancelButton;
+    /** The Button which is used for liking a meal. */
     private MaterialButton likeButton;
+    /** The Button which is used for disliking a meal. */
     private MaterialButton dislikeButton;
+    /** Label which displays the number of likes of a meal. */
     private TextView likeCountLabel;
+    /** Label which displays the number of dislikes of a meal. */
     private TextView dislikeCountLabel;
+    /** The Meal Object which holds the information about the displayed Mensa Meal. */
     private Meal meal;
+    /** Holds the Route for Liking Functionality in the Backendservice. */
     private String likeRoute = "/likes";
+    /** Current Like State of the user. A Like State tells if a user has liked, disliked or is neutral to the meal. */
     private String likeState = LikeStates.neutral;
+    /** Number of likes. */
     private int likeCount = 0;
+    /** Number of dislikes. */
     private int dislikeCount = 0;
 
     @Override
@@ -90,13 +131,21 @@ public class MealDetailActivity extends AppCompatActivity {
     }
 
     // Actions
-    // Action for Cancel Button
+    /**
+     * Click Listener for the cancelButton. Closes the Dialog Window and returns to previous window.
+     * @param view Holds the view which was clicked. Here: cancelButton.
+     */
     public void cancel(View view) {
         DELEGATE = null;
         finish();
     }
 
-    // Action for Like Button
+    /**
+     * Click Listener for the likeButton. Is called if user clicks on likeButton. Performs the
+     * appropriate actions for liking a meal by communicating with the backend and updating
+     * views.
+     * @param view
+     */
     public void like(View view) {
         if (meal == null) return;
 
@@ -144,7 +193,12 @@ public class MealDetailActivity extends AppCompatActivity {
         }
     }
 
-    // Action for Dislike Button
+    /**
+     * Click Listener for the dislikeButton. Is called if user clicks on dislikeButton. Performs the
+     * appropriate actions for disliking a meal by communicating with the backend and updating
+     * views.
+     * @param view
+     */
     public void dislike(View view) {
         if (meal == null) return;
 
@@ -193,7 +247,9 @@ public class MealDetailActivity extends AppCompatActivity {
     }
 
     // Private Functions
-    /* Starts Backend DELETE-Request to delete likes or dislikes from DB */
+    /**
+     * Starts Backend DELETE-Request to delete likes or dislikes from DB.
+     */
     private void deleteLikeDislikeInDB() {
         // Construct URL
         String baseUrl = networkingManager.getBackendURL();
@@ -217,7 +273,10 @@ public class MealDetailActivity extends AppCompatActivity {
         networkingManager.addToRequestQueue(deleteLikeRequest);
     }
 
-    /* Starts Backend POST-Request to update or insert like, dislike in DB */
+    /**
+     * Starts Backend POST-Request to update or insert like, dislike in DB.
+     * @param type the type of the like. Like: 1. Dislike: -1.
+     */
     private void insertOrUpdateLikeDislikeInDB(int type) {
         // Construct body
         JSONObject like = new JSONObject();
@@ -248,7 +307,9 @@ public class MealDetailActivity extends AppCompatActivity {
         networkingManager.addToRequestQueue(insertOrUpdateLikeRequest);
     }
 
-    /* Starts Backend GET-Request to check if user likes, dislikes or is neutral to the displayed Meal */
+    /**
+     * Starts Backend GET-Request to check if user likes, dislikes or is neutral to the currently displayed Meal.
+     */
     private void getLikeDislikeState() {
         String baseURL = networkingManager.getBackendURL() + "/meals";
         String queryParams = String.format(Locale.GERMAN,"?mealid=%d&userid=%d", meal.getId(), UserSession.getSessionToken());
@@ -268,7 +329,10 @@ public class MealDetailActivity extends AppCompatActivity {
         networkingManager.addToRequestQueue(likeDislikeStateRequest);
     }
 
-    // Completion Handler for Request to Backend sent by function getLikeDislikeState()
+    /**
+     * Completion Handler for Request to Backend sent by function getLikeDislikeState().
+     * @param response The JSON Response of the backend.
+     */
     private void likeDislikeStateHandler(JSONObject response) {
         try {
             int state = response.getInt("state");
@@ -280,7 +344,12 @@ public class MealDetailActivity extends AppCompatActivity {
         }
     }
 
-    // Change Button Colors specific to the Like-State of the user regarding this meal and set Number of Likes and Dislikes
+    /**
+     * Change Button Colors specific to the Like-State of the user regarding this meal and set Number of Likes and Dislikes.
+     * @param state tells if user likes, dislikes or is neutral regarding the displayed meal.
+     * @param likes Number of likes of the meal.
+     * @param dislikes Number of dislikes of the meal.
+     */
     private void updateAndShowLikeDislikes(int state, String likes, String dislikes) {
         // Show the number of likes and dislikes in total of the meal
         likeCountLabel.setText(likes);
@@ -301,7 +370,11 @@ public class MealDetailActivity extends AppCompatActivity {
         }
     }
 
-    // Highlight the Buttons depending on if the User has liked/disliked the Meal or nothing of both
+    /**
+     * Highlight the Buttons appropriately, if the User has liked/disliked the Meal or nothing of both.
+     * @param like true, if user likes the displayed meal.
+     * @param dislike true, if user dislikes the displayed meal.
+     */
     private void highlightLikeDislikeButtons(boolean like, boolean dislike) {
         if (like) {
             likeButton.setTextColor(Color.BLUE);
@@ -315,7 +388,12 @@ public class MealDetailActivity extends AppCompatActivity {
         }
     }
 
-    // Update the Like State for a given Like type: 0: neutral, 1: like, -1: dislike
+    //
+
+    /**
+     * Update the Like State for a given Like type: 0: neutral, 1: like, -1: dislike.
+     * @param type The type of like.
+     */
     private void updateLikeState(int type) {
         switch (type) {
             case 1:
@@ -329,50 +407,13 @@ public class MealDetailActivity extends AppCompatActivity {
         }
     }
 
-    // Informs the Delegate that changes occurred and updates Meals Like and Dislike Count
+    /**
+     * Informs the registered Delegate that changes have occurred and passes the updated Meal Object to the Delegate.
+     */
     private void informDelegate() {
         meal.setLikes(likeCount);
         meal.setDislikes(dislikeCount);
         DELEGATE.changesInLikesDislikes(true, meal);
     }
-
-    /*
-    // Checks if current displayed Meal is saved as a favorite
-    private boolean mealIsFavorite() {
-        String json = sharedPreferences.getString(meal.getName(), null);
-        System.out.println(json);
-        if (json == null) return false;
-        else return true;
-    }
-
-    // Save current selected Meal as a Favorite
-    private void saveMealAsFavorite() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(meal, Meal.class);
-        editor.putString(meal.getName(), json);
-        editor.apply();
-        if (DELEGATE != null) DELEGATE.changesInFavorites(true, meal);
-    }
-
-    // Remove current selected Meal as a Favorite
-    private void deleteMealAsFavorite() {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove(meal.getName());
-        editor.apply();
-        if (DELEGATE != null) DELEGATE.changesInFavorites(true, meal);
-    }
-
-    private void setSubscribeButton() {
-        subscribeButton.setText(R.string.add);
-        subscribeLabel.setText(R.string.subscribeText);
-        isSubscribed = false;
-    }
-
-    private void setUnsubscribeButton() {
-        subscribeButton.setText(R.string.minus);
-        subscribeLabel.setText(R.string.unsubscribeText);
-        isSubscribed = true;
-    } */
 
 }

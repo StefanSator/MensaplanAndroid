@@ -91,6 +91,7 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryView
 
     /**
      * Returns the size of the dataset (is invoked by the layout manager of the RecyclerView).
+     * @return int size of the dataset.
      */
     @Override
     public int getItemCount() {

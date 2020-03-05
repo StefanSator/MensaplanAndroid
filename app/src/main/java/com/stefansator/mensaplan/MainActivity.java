@@ -8,9 +8,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+/**
+ * The main controller for handling the navigation within the app, by switching between different
+ * Fragments.
+ * @author stefansator
+ * @version 1.0
+ */
 public class MainActivity extends AppCompatActivity {
+    /** Bottom Navgation Bar which is used for navigation within the app */
     private BottomNavigationView bottomNavigationView;
+    /** FragmentTransaction Object, used for replacing Fragments within the app. */
     private FragmentTransaction fragmentTransaction;
+    /** Fragment Manager, which is used for instantiation of Fragment Transactions. */
     private FragmentManager fragmentManager;
 
     @Override

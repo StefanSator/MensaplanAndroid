@@ -23,15 +23,31 @@ import java.util.Locale;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+/**
+ * Fragment for implementing the Most Popular and Unpopular Meal Functionality. It displays the Most
+ * Popular and Most Unpopular Meal of the current day.
+ * @author stefansator
+ * @version 1.0
+ */
 public class PopularMealsFragment extends Fragment implements ChangesLikeDislikeDelegate {
+    /** Shows the name of the most popular meal. */
     private TextView mostPopularMealLabel;
+    /** Shows the name of the most unpopular meal. */
     private TextView mostUnpopularMealLabel;
+    /** Material Card holding information about the most popular meal. */
     private MaterialCardView mostPopularCard;
+    /** Material Card holding information about the most unpopular meal. */
     private MaterialCardView mostUnpopularCard;
+    /** The most popular meal of current day */
     private Meal mostPopularMeal;
+    /** The most unpopular meal of current day */
     private Meal mostUnpopularMeal;
 
     // Action Listeners
+    /**
+     * Click Listener which gets triggered if a Material Card is clicked. It opens the Detail Dialog
+     * to show details to the selected meal.
+     */
     private View.OnClickListener cardClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -40,6 +56,14 @@ public class PopularMealsFragment extends Fragment implements ChangesLikeDislike
         }
     };
 
+    /**
+     * This function is called, when the PopularMealsFragment is created. It instantiates the User
+     * Interface and adds Click Listeners.
+     * @param inflater inflater for inflating views in the fragment
+     * @param container parent view to which the fragment should be attached to
+     * @param savedInstanceState If non-null, fragment is being reconstructed from previous state
+     * @return View This returns the created Layout as a View Object
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_popular_meals, container, false);
@@ -63,7 +87,9 @@ public class PopularMealsFragment extends Fragment implements ChangesLikeDislike
     }
 
     // Private Functions
-    /* Starts GET-Request to Backend to retrieve the most popular and most unpopular Meal of current day */
+    /**
+     * Starts GET-Request to Backend to retrieve the most popular and most unpopular Meal of current day.
+     */
     private void loadPopularAndUnpopularMeal() {
         Calendar calendar = new GregorianCalendar();
         int weekOfYear = calendar.get(Calendar.WEEK_OF_YEAR);
@@ -94,7 +120,10 @@ public class PopularMealsFragment extends Fragment implements ChangesLikeDislike
         networkingManager.addToRequestQueue(popularUnpopularMealRequest);
     }
 
-    /* Completion Handler for Backend Request to retrieve the most popular and unpopular Meals */
+    /**
+     * Completion Handler for Backend Request to retrieve the most popular and unpopular Meals.
+     * @param response The Response from the backend service.
+     */
     private void loadPopularAndUnpopularMealHandler(JSONObject response) {
         try {
             JSONObject popularMealJSON = response.getJSONObject("popular");
@@ -108,7 +137,11 @@ public class PopularMealsFragment extends Fragment implements ChangesLikeDislike
         }
     }
 
-    /* Returns the String Identifier of a weekday for a given Int */
+    /**
+     * Returns the String Identifier of a weekday for a given int.
+     * @param weekday Current weekday as int.
+     * @return String Current weekday as String.
+     */
     private String transformWeekdayIntToString(int weekday) {
         switch (weekday) {
             case Calendar.MONDAY:
@@ -130,7 +163,10 @@ public class PopularMealsFragment extends Fragment implements ChangesLikeDislike
         }
     }
 
-    /* Open Meal Detail Dialog Window */
+    /**
+     * Open Meal Detail Dialog Window, to show details of a meal.
+     * @param view The view which was selected.
+     */
     private void showMealDialog(View view) {
         // Open Meal Detail Dialog Window
         Intent intent = new Intent(getActivity().getApplicationContext(), MealDetailActivity.class);

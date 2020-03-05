@@ -34,15 +34,37 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Fragment for implementing the Mensaspeiseplan Functionality. It handles a list
+ * which contains all current meals of the current week. It implements functionality used for
+ * managing the list.
+ * @author stefansator
+ * @version 1.0
+ */
 public class MealListFragment extends Fragment implements ChangesLikeDislikeDelegate {
+    /** List containing the current Mensa Meals */
     private List<Meal> meals = new ArrayList<Meal>();
+    /** The RecyclerView for displaying the list */
     private RecyclerView mealsRecyclerView;
+    /** The Adapter for the RecyclerView. */
     private MealsRecyclerViewAdapter mealsAdapter;
+    /** The LayoutManager used for the RecyclerView. */
     private RecyclerView.LayoutManager layoutManager;
+    /** The TabLayout used for switching through a tab bar between different days of the week. */
     private TabLayout tabLayout;
+    /** Current Calendar Week */
     private int weekOfYear;
+    /** Current Year */
     private int year;
 
+    /**
+     * This function is called, when the MealListFragment is created. It instantiates the User
+     * Interface, by setting up the RecyclerView.
+     * @param inflater inflater for inflating views in the fragment
+     * @param container parent view to which the fragment should be attached to
+     * @param savedInstanceState If non-null, fragment is being reconstructed from previous state
+     * @return View This returns the created Layout as a View Object
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_meal_list, container, false);
@@ -126,7 +148,10 @@ public class MealListFragment extends Fragment implements ChangesLikeDislikeDele
     }
 
     // Private Functions
-    // Get Meal Data Set from Backend
+    /**
+     * Get Meal Data for a selected week day from the backend service through a rest call.
+     * @param weekDay selected week day.
+     */
     private void loadMealData(String weekDay) {
         // Get the NetworkingManager
         NetworkingManager networkingManager = NetworkingManager.getInstance(this.getActivity());
@@ -152,6 +177,10 @@ public class MealListFragment extends Fragment implements ChangesLikeDislikeDele
         networkingManager.addToRequestQueue(jsonArrayRequest);
     }
 
+    /**
+     * Fill the meals List with data from the JSONArray Response returned by the backend.
+     * @param jsonArray Response from the backend service.
+     */
     private void initializeMealsArray(JSONArray jsonArray) {
         try {
             for (int i = 0 ; i < jsonArray.length() ; i++) {
@@ -164,17 +193,28 @@ public class MealListFragment extends Fragment implements ChangesLikeDislikeDele
         }
     }
 
+    /**
+     * Clears the RecyclerView.
+     */
     private void clearAllMealData() {
         meals.clear();
         mealsRecyclerView.removeAllViews();
         mealsAdapter.removeAll();
     }
 
+    /**
+     * Reloads the RecyclerView, to display data of a different selected weekDay.
+     * @param weekDay The weekday for which the list should show the Mensa Meals.
+     */
     private void reloadListWithData(String weekDay) {
         loadMealData(weekDay);
     }
 
-    /* Returns the original Meal Object in a Data Set of Recycler View from a copy */
+    /**
+     * Returns the original Meal Object in a Data Set of Recycler View from a copy.
+     * @param mealCopy Copy of the Meal Object.
+     * @return Meal Original Meal.
+     */
     private Meal getOriginalMeal(Meal mealCopy) {
         Meal original = meals.stream().filter(m -> mealCopy.getName().equals(m.getName()))
                 .findAny()

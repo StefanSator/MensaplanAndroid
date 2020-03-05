@@ -22,11 +22,21 @@ import java.util.regex.Pattern;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * The controller for handling the registration process within the app.
+ * @author stefansator
+ * @version 1.0
+ */
 public class RegisterActivity extends AppCompatActivity {
+    /** Input Field for the email of the user */
     private TextInputEditText emailInput;
+    /** Input Field for the username of the user */
     private TextInputEditText usernameInput;
+    /** Input Field for the password of the user */
     private TextInputEditText passwordInput1;
+    /** Input Field for the password of the user */
     private TextInputEditText passwordInput2;
+    /** NetworkingManager for managing communication with backend service. */
     private NetworkingManager networkingManager;
 
     @Override
@@ -42,14 +52,20 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     //Actions
-    //Action to check if Registration is compatible and if compatible send Request for Registration of user to Backend */
+    /**
+     * Action to check if Registration is valid, if register button was clicked,
+     * and if valid, send Request for Registration of the user to the Backend.
+     * @param view The view which was clicked.
+     */
     public void registerButtonClicked(View view) {
         // Check registration
         checkRegistration();
     }
 
     // Private Functions
-    // Checks registration and if correct, then call backend to register new user
+    /**
+     * Checks registration and if correct, then call backend to register new user.
+     */
     private void checkRegistration() {
         if (!checkEmail()) return;
         if (!checkUsername()) return;
@@ -57,7 +73,10 @@ public class RegisterActivity extends AppCompatActivity {
         checkIfUserIsAvailable();
     }
 
-    // Checks if Email has correct Format
+    /**
+     * Checks if Email has correct Format.
+     * @return boolean true, if email has valid format.
+     */
     private boolean checkEmail() {
         boolean correct = !TextUtils.isEmpty(emailInput.getText()) && android.util.Patterns.EMAIL_ADDRESS.matcher(emailInput.getText()).matches();
         if (!correct) {
@@ -67,7 +86,10 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
 
-    // Checks if Username has correct Format
+    /**
+     * Checks if Username has correct Format.
+     * @return boolean true, if Username has valid format.
+     */
     private boolean checkUsername() {
         Pattern USERNAME_PATTERN = Pattern.compile("^[a-zA-Z0-9]+$");
         boolean correct = !TextUtils.isEmpty(usernameInput.getText()) && USERNAME_PATTERN.matcher(usernameInput.getText()).matches();
@@ -78,7 +100,10 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
 
-    // Checks if both Password Inputs are correct
+    /**
+     * Checks if both Password Inputs are correct.
+     * @return boolean true, if Password Inputs are valid.
+     */
     private boolean checkPasswords() {
         if (!passwordInput1.getText().toString().equals(passwordInput2.getText().toString())) {
             showAlert("Passwords are different.");
@@ -91,7 +116,9 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
 
-    // Checks if user is already available in System by asking the Backend
+    /**
+     * Checks if user is available in System by asking the Backend.
+     */
     private void checkIfUserIsAvailable() {
         // Construct the URL
         String url = networkingManager.getBackendURL() + "/customers?email=" + emailInput.getText();
@@ -111,7 +138,9 @@ public class RegisterActivity extends AppCompatActivity {
         networkingManager.addToRequestQueue(checkIfUserInSystemRequest);
     }
 
-    // Registers new User in Backend
+    /**
+     * Registers new User by sending registration request to the backend service.
+     */
     private void registerUser() {
         // Construct the URL
         String url = networkingManager.getBackendURL() + "/customers";
@@ -140,7 +169,10 @@ public class RegisterActivity extends AppCompatActivity {
         networkingManager.addToRequestQueue(registerUserRequest);
     }
 
-    // Completion Handler for Request to Backend in function checkIfUserIsAvailable()
+    /**
+     * Completion Handler for Request to Backend in function checkIfUserIsAvailable().
+     * @param response response of the backend service.
+     */
     private void checkIfUserIsAvailableHandler(JSONArray response) {
         if (response.length() != 0) {
             showAlert("User already available in System.");
@@ -149,7 +181,10 @@ public class RegisterActivity extends AppCompatActivity {
         registerUser();
     }
 
-    // Completion Handler for Request to Backend for registration of a new user
+    /**
+     * Completion Handler for Request to Backend for registration of a new user.
+     * @param response response of the backend service.
+     */
     private void registerUserHandler(JSONObject response) {
         try {
             int sessionToken = response.getInt("customerid");
@@ -161,7 +196,10 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    // Shows Alert Dialog when user input is not valid
+    /**
+     * Shows Alert Dialog when user input is not valid or registration process failed.
+     * @param message The message to show on display to the user of the app.
+     */
     private void showAlert(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(message);
